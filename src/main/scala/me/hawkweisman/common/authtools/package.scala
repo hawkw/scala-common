@@ -29,7 +29,7 @@ package object authtools {
     (hasher.digest.map(Integer.toHexString(_)).mkString, salt)
   }
   def randomString(alphabet: String)(n: Int)(implicit random: scala.util.Random): String =
-    Stream.continually(random.nextInt(alphabet.size))
+    Stream.continually(random.nextInt(alphabet.length))
       .map(alphabet)
       .take(n)
       .mkString
