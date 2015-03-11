@@ -29,12 +29,13 @@ package object math {
    * @param k the number of nearest neighbors
    * @param xs a `Set` of `T` from which to find the nearest neighbors
    * @param dist the distance function
-   * @tparam T the type of the item being searched
+   * @tparam A the type of the item being searched
+   * @tparam B the type of the distance result
    * @return a set containing the nearest _k_ values
    */
-  def kNearest[T](k: Int, xs: Set[T])(dist: (T) => Comparable[T]): Set[T] = {
+  def kNearest[A,B <% Ordered[B]](k: Int, xs: Set[A])(dist: (A) => B): Set[A] = {
     require(k >= 0, "Values of k must be greater than zero")
-    @tailrec def _kNearest(k: Int, xs: Set[T], neighbors: Set[T]): Set[T] = {
+    @tailrec def _kNearest(k: Int, xs: Set[A], neighbors: Set[A]): Set[A] = {
       val nearest = xs minBy dist
       k match {
         case 0 => neighbors + nearest
@@ -45,15 +46,15 @@ package object math {
   }
 
   def kNearest(k: Int, target: Double, xs: Set[Double]): Set[Double] =
-    kNearest[Double](k, xs)((it: Double) => scala.math.abs(it - target))
+    kNearest[Double,Double](k, xs)((it: Double) => scala.math.abs(it - target))
 
   def kNearest(k: Int, target: Int, xs: Set[Int]): Set[Int] =
-    kNearest[Int](k, xs)((it: Int) => scala.math.abs(it - target))
+    kNearest[Int,Int](k, xs)((it: Int) => scala.math.abs(it - target))
 
   def kNearest(k: Int, target: Float, xs: Set[Float]): Set[Float] =
-    kNearest[Float](k, xs)((it: Float) => scala.math.abs(it - target))
+    kNearest[Float,Float](k, xs)((it: Float) => scala.math.abs(it - target))
 
   def kNearest(k: Int, target: Long, xs: Set[Long]): Set[Long] =
-    kNearest[Long](k, xs)((it: Long) => scala.math.abs(it - target))
+    kNearest[Long,Long](k, xs)((it: Long) => scala.math.abs(it - target))
 
 }
