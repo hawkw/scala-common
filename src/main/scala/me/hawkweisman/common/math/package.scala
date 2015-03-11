@@ -1,6 +1,7 @@
 package me.hawkweisman.common
 
 import scala.annotation.tailrec
+import scala.math.abs
 
 /**
  * Miscellaneous mathematical and statistical functionality.
@@ -46,15 +47,15 @@ package object math {
   }
 
   def kNearest(k: Int, target: Double, xs: Set[Double]): Set[Double] =
-    kNearest[Double,Double](k, xs)((it: Double) => scala.math.abs(it - target))
+    kNearest[Double,Double](k, xs)((it: Double) => abs(it - target))
 
   def kNearest(k: Int, target: Int, xs: Set[Int]): Set[Int] =
-    kNearest[Int,Int](k, xs)((it: Int) => scala.math.abs(it - target))
+    kNearest[Int,Int](k, xs)((it: Int) => abs(it - target))
 
   def kNearest(k: Int, target: Float, xs: Set[Float]): Set[Float] =
-    kNearest[Float,Float](k, xs)((it: Float) => scala.math.abs(it - target))
+    kNearest[Float,Float](k, xs)((it: Float) => abs(it - target))
 
   def kNearest(k: Int, target: Long, xs: Set[Long]): Set[Long] =
-    kNearest[Long,Long](k, xs)((it: Long) => scala.math.abs(it - target))
+    kNearest[Long,Long](k, xs)((it: Long) => abs(it - target))
 
 }
