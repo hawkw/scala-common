@@ -1,0 +1,16 @@
+sudo: false
+language: scala
+sbt_args: -sbt-version 0.13.7
+scala:
+- 2.11.6
+- 2.11.4
+- 2.10.4
+script:
+- sbt compile
+- sbt clean coverage test
+- sbt coverageReport
+- sbt coverageAggregate
+- sbt codacyCoverage
+env:
+  global:
+    secure: RqnPLSv01Yo5Jrer77IFaux6ZmYWbPaHYynToHBwm20ue549FP009H1eXf5QgjdB6xATSMN/5dHO+J7HQzlOh8wQpygzOBEHXrY8VxYonrGTHvU1qF02T1TYzfqbuf6zD4dzpTOBcTjGpE5SMZNocppetmz9r2R25dGNPu3NmSs=
