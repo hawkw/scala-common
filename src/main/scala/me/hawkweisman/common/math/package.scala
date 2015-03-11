@@ -32,7 +32,7 @@ package object math {
    * @tparam T the type of the item being searched
    * @return a set containing the nearest _k_ values
    */
-  def kNearest[T](k: Int, xs: Set[T])(dist: (T) => Comparable): Set[T] = {
+  def kNearest[T](k: Int, xs: Set[T])(dist: (T) => Comparable[T]): Set[T] = {
     require(k >= 0, "Values of k must be greater than zero")
     @tailrec def _kNearest(k: Int, xs: Set[T], neighbors: Set[T]): Set[T] = {
       val nearest = xs minBy dist
