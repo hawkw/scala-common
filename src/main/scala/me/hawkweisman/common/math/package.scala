@@ -1,4 +1,4 @@
-package me.hawkweisman
+package me.hawkweisman.common
 
 import scala.annotation.tailrec
 
