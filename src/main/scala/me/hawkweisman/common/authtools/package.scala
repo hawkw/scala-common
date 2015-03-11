@@ -61,21 +61,21 @@ package object authtools {
   def hash(
    pass: String,
    algorithm: String = "SHA_512",
-   saltSource: () => String = randomAlphanumericString(16)
-    ): (String,String) = {
-    val salt: String = saltSource()
+   saltSource: (scala.util.Random) => String = randomAlphanumericString(16)
+    )(implicit random: scala.util.Random): (String,String) = {
+    val salt: String = saltSource(random)
     val hasher = MessageDigest.getInstance(algorithm)
     hasher update ( pass getBytes )
     hasher update ( salt getBytes )
     (hasher.digest.map(Integer.toHexString(_)).mkString, salt)
   }
-  def randomString(alphabet: String)(n: Int)(implicit random: scala.util.Random): String =
+  def randomString(alphabet: String)(n: Int)(random: scala.util.Random): String =
     Stream.continually(random.nextInt(alphabet.length))
       .map(alphabet)
       .take(n)
       .mkString
 
-  def randomAlphanumericString(n: Int)(implicit random: scala.util.Random) =
+  def randomAlphanumericString(n: Int)(random: scala.util.Random) =
     randomString("abcdefghijklmnopqrstuvwxyz0123456789")(n)(random)
 
 }
