@@ -60,7 +60,7 @@ package object authtools {
   @throws[NoSuchAlgorithmException]("if the specified hashing algorithm doesn't exist")
   def hash(
    pass: String,
-   algorithm: String = "SHA_512",
+   algorithm: String = "SHA-512",
    salt: String = randomAlphanumericString(16)(new scala.util.Random)
    ): (String,String) = {
     val hasher = MessageDigest.getInstance(algorithm)
