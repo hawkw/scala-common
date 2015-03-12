@@ -61,9 +61,8 @@ package object authtools {
   def hash(
    pass: String,
    algorithm: String = "SHA_512",
-   saltSource: (scala.util.Random) => String = randomAlphanumericString(16)
-    )(implicit random: scala.util.Random): (String,String) = {
-    val salt: String = saltSource(random)
+   salt: String = randomAlphanumericString(16)(new scala.util.Random)
+   ): (String,String) = {
     val hasher = MessageDigest.getInstance(algorithm)
     hasher update ( pass getBytes )
     hasher update ( salt getBytes )
