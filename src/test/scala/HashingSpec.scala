@@ -9,7 +9,7 @@ import org.scalacheck.Arbitrary._
  */
 class HashingSpec extends FlatSpec with GeneratorDrivenPropertyChecks{
 
-  "The hash() method" should "generate the same hash and salt for given passes and salts" in {
+  "The hash() method" should "generate correct SHA-512 hashes" in {
     forAll {
       (pass: String, salt: String) => whenever(pass.length > 0 && salt.length() > 0) {
         val hasher = MessageDigest.getInstance("SHA-512")
@@ -19,5 +19,24 @@ class HashingSpec extends FlatSpec with GeneratorDrivenPropertyChecks{
       }
     }
   }
-
+  it should "generate correct SHA-512 hashes when passed SHA-512 explicitly" in {
+    forAll {
+      (pass: String, salt: String) => whenever(pass.length > 0 && salt.length() > 0) {
+        val hasher = MessageDigest.getInstance("SHA-512")
+        hasher update (pass getBytes)
+        hasher update (salt getBytes)
+        authtools.hash(pass, salt = salt, algorithm="SHA-512") ==(hasher.digest.map(Integer.toHexString(_)).mkString, salt)
+      }
+    }
+  }
+  it should "generate correct SHA-256 hashes" in {
+    forAll {
+      (pass: String, salt: String) => whenever(pass.length > 0 && salt.length() > 0) {
+        val hasher = MessageDigest.getInstance("SHA-256")
+        hasher update (pass getBytes)
+        hasher update (salt getBytes)
+        authtools.hash(pass, salt = salt, algorithm="SHA-256") ==(hasher.digest.map(Integer.toHexString(_)).mkString, salt)
+      }
+    }
+  }
 }
