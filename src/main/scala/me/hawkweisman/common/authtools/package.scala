@@ -66,6 +66,7 @@ package object authtools {
   }
   def randomString(alphabet: String)(n: Int)(random: scala.util.Random): String = {
     require(n > 0, "Desired length must be positive")
+    require(alphabet != "", "Alphabet must contain characters")
     Stream.continually(random.nextInt(alphabet.length))
       .map(alphabet)
       .take(n)
