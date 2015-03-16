@@ -64,11 +64,14 @@ package object authtools {
     hasher update ( salt getBytes )
     (hasher.digest.map(Integer.toHexString(_)).mkString, salt)
   }
-  def randomString(alphabet: String)(n: Int)(random: scala.util.Random): String =
+  def randomString(alphabet: String)(n: Int)(random: scala.util.Random): String = {
+    require(n > 0, "Desired length must be positive")
     Stream.continually(random.nextInt(alphabet.length))
       .map(alphabet)
       .take(n)
       .mkString
+  }
+
 
   def randomAlphanumericString(n: Int)(random: scala.util.Random): String =
     randomString("abcdefghijklmnopqrstuvwxyz0123456789")(n)(random)

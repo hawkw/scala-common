@@ -1,13 +1,13 @@
 import java.security.MessageDigest
 
 import me.hawkweisman.common.authtools
-import org.scalatest.FlatSpec
+import org.scalatest.{Matchers, FlatSpec}
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
 import org.scalacheck.Arbitrary._
 /**
  * Created by hawk on 3/12/15.
  */
-class HashingSpec extends FlatSpec with GeneratorDrivenPropertyChecks{
+class AuthSpec extends FlatSpec with GeneratorDrivenPropertyChecks with Matchers {
 
   "The hash() method" should "generate correct SHA-512 hashes" in {
     forAll {
@@ -39,4 +39,18 @@ class HashingSpec extends FlatSpec with GeneratorDrivenPropertyChecks{
       }
     }
   }
-}
+  "The randomAlphanumericString() method" should "generate strings of the correct length" in {
+    forAll {
+      (length: Int) => whenever (length > 0) {
+        authtools.randomAlphanumericString(length)(new scala.util.Random).length == length
+      }
+    }
+  }
+  it should "generate strings in the alphabet [abcdefghijklmnopqrstuvwxyz0123456789]*" in {
+    forAll {
+      (length: Int) => whenever (length > 0) {
+        authtools.randomAlphanumericString(length)(new scala.util.Random) should fullyMatch regex """[abcdefghijklmnopqrstuvwxyz0123456789]*"""
+      }
+    }
+  }
+ }
