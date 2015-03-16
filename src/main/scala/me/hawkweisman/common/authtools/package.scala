@@ -49,11 +49,7 @@ package object authtools {
    *
    * @param pass The password to hash.
    * @param algorithm The hashing algorithm. Defaults to SHA-512.
-   * @param saltSource A partially-applied function of the type signature `() => String`
-   *                   that provides the salt. By default, this is a random 16-character
-   *                   alphanumeric string for hashing new passwords. Alternatively, you
-   *                   may pass a different salt generator, or a String to validate the
-   *                   hash of an existing password.
+   * @param salt The salt
    * @throws NoSuchAlgorithmException if the specified hashing algorithm doesn't exist
    * @return A tuple containing (hash, salt) as strings
    */
@@ -74,7 +70,7 @@ package object authtools {
       .take(n)
       .mkString
 
-  def randomAlphanumericString(n: Int)(random: scala.util.Random) =
+  def randomAlphanumericString(n: Int)(random: scala.util.Random): String =
     randomString("abcdefghijklmnopqrstuvwxyz0123456789")(n)(random)
 
 }
