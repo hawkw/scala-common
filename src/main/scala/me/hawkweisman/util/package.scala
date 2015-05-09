@@ -48,7 +48,9 @@ package object util {
    */
   def randomJavaIdent(n: Int)(random: scala.util.Random): String = {
     val first = randomString("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_$")(1)(random)
-    val rest = randomString("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_$12345667890")(n-1)(random)
+    val rest = if (n > 1) {
+      randomString("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_$12345667890")(n-1)(random)
+    } else {""}
     s"$first$rest"
   }
 }
