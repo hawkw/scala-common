@@ -36,14 +36,14 @@ package object math {
    */
   def kNearest[A,B <% Ordered[B]](k: Int, xs: Set[A])(dist: (A) => B): Set[A] = {
     require(k > 0, "Values of k must be greater than zero")
-    @tailrec def _kNearest(k: Int, xs: Set[A], neighbors: Set[A]): Set[A] = {
+    @tailrec def findKNearest(k: Int, xs: Set[A], neighbors: Set[A]): Set[A] = {
       val nearest = xs minBy dist
       k match {
         case 0 => neighbors + nearest
         case _ => _kNearest(k - 1, xs - nearest, neighbors + nearest)
       }
     }
-    _kNearest(k, xs, Set())
+    findKNearest(k, xs, Set())
   }
 
   def kNearest(k: Int, target: Double, xs: Set[Double]): Set[Double] =

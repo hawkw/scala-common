@@ -1,7 +1,10 @@
-import org.scalatest.{Matchers, FlatSpec}
+import org.scalatest.Matchers
+import org.scalatest.FlatSpec
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
+
 import org.scalacheck.Gen
 import org.scalacheck.Arbitrary.arbitrary
+
 import me.hawkweisman.util
 
 /**
@@ -11,7 +14,7 @@ class UtilSpec extends FlatSpec with GeneratorDrivenPropertyChecks with Matchers
 
   val lengths = Gen.choose(1,500) // this is so we don't spend forever generating strings
 
-  "The randomAlphanumericString() method" should "generate strings of the correct length" in {
+  "The randomAlphanumericString() method" should "generate strings of the desired length" in {
     forAll (lengths) { (length: Int) =>
       util.randomAlphanumericString(length)(new scala.util.Random) should have length length
     }
@@ -37,7 +40,7 @@ class UtilSpec extends FlatSpec with GeneratorDrivenPropertyChecks with Matchers
       }
     }
   }
-  "The randomJavaIdent() method" should "generate strings of the correct length" in {
+  "The randomJavaIdent() method" should "generate identifiers of the correct length" in {
     forAll (lengths) { (length: Int) =>
       util.randomJavaIdent(length)(new scala.util.Random) should have length length
     }

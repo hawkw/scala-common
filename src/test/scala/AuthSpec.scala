@@ -1,9 +1,12 @@
 import java.security.MessageDigest
 
-import me.hawkweisman.util.auth
-import org.scalatest.{Matchers, FlatSpec}
+import org.scalatest.Matchers
+import org.scalatest.FlatSpec
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
+
 import org.scalacheck.Arbitrary._
+
+import me.hawkweisman.util.auth.hash
 /**
  * Created by hawk on 3/12/15.
  */
@@ -18,7 +21,7 @@ class AuthSpec extends FlatSpec with GeneratorDrivenPropertyChecks with Matchers
         val hasher = MessageDigest getInstance sha512
         hasher update (pass getBytes)
         hasher update (salt getBytes)
-        auth.hash(pass, salt = salt) ==(hasher.digest.map(Integer.toHexString(_)).mkString, salt)
+        hash(pass, salt = salt) ==(hasher.digest.map(Integer.toHexString(_)).mkString, salt)
       }
     }
   }
@@ -28,7 +31,7 @@ class AuthSpec extends FlatSpec with GeneratorDrivenPropertyChecks with Matchers
         val hasher = MessageDigest getInstance sha512
         hasher update (pass getBytes)
         hasher update (salt getBytes)
-        auth.hash(pass, salt = salt, algorithm=sha512) == (hasher.digest.map(Integer.toHexString(_)).mkString, salt)
+        hash(pass, salt = salt, algorithm=sha512) == (hasher.digest.map(Integer.toHexString(_)).mkString, salt)
       }
     }
   }
@@ -38,7 +41,7 @@ class AuthSpec extends FlatSpec with GeneratorDrivenPropertyChecks with Matchers
         val hasher = MessageDigest getInstance sha256
         hasher update (pass getBytes)
         hasher update (salt getBytes)
-        auth.hash(pass, salt = salt, algorithm=sha256) == (hasher.digest.map(Integer.toHexString(_)).mkString, salt)
+        hash(pass, salt = salt, algorithm=sha256) == (hasher.digest.map(Integer.toHexString(_)).mkString, salt)
       }
     }
   }
