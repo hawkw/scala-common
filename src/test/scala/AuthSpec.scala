@@ -39,32 +39,4 @@ class AuthSpec extends FlatSpec with GeneratorDrivenPropertyChecks with Matchers
       }
     }
   }
-  "The randomString() method" should "generate strings of the correct length" in {
-    forAll {
-      (length: Int) => whenever (length > 0) {
-        auth.randomAlphanumericString(length)(new scala.util.Random).length == length
-      }
-    }
-  }
-  it should "generate strings in the alphabet [abcdefghijklmnopqrstuvwxyz0123456789]*" in {
-    forAll {
-      (length: Int) => whenever (length > 0) {
-        auth.randomAlphanumericString(length)(new scala.util.Random) should fullyMatch regex """[abcdefghijklmnopqrstuvwxyz0123456789]*"""
-      }
-    }
-  }
-  "The randomAlphanumericString() method" should "generate strings of the correct length" in {
-    forAll {
-      (alphabet: String, length: Int) => whenever (alphabet != "" && length > 0) {
-        auth.randomString(alphabet)(length)(new scala.util.Random).length == length
-      }
-    }
-  }
-  it should "generate strings in the specified alphabet" in {
-    forAll {
-      (alphabet: String, length: Int) => whenever (alphabet != "" && length > 0) {
-        auth.randomString(alphabet)(length)(new scala.util.Random) should fullyMatch regex s"""[$alphabet]*"""
-      }
-    }
-  }
  }
