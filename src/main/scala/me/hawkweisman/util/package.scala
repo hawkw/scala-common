@@ -39,4 +39,16 @@ package object util {
    */
   def randomAlphanumericString(n: Int)(random: scala.util.Random): String =
     randomString("abcdefghijklmnopqrstuvwxyz0123456789")(n)(random)
+
+  /**
+   * Generates a random [[String]] that is a valid Java identifier
+   * @param n the length of the [[String]]
+   * @param random an instance of [[scala.util.Random]]
+   * @return a [[String]] of length _n_
+   */
+  def randomJavaIdent(n: Int)(random: scala.util.Random): String = {
+    val first = randomString("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_$")(1)(random)
+    val rest = randomString("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_$12345667890")(n-1)(random)
+    s"$first$rest"
+  }
 }
