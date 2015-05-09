@@ -1,4 +1,4 @@
-package me.hawkweisman.common
+package me.hawkweisman.util
 
 import java.security.{NoSuchAlgorithmException, MessageDigest}
 import scala.language.postfixOps
@@ -7,7 +7,7 @@ import scala.language.postfixOps
  * Auth stuff
  * @author Hawk Weisman <hi@hawkweisman.me>
  */
-package object authtools {
+package object auth {
 
   /**
    * General-purpose password hashing method. This can be used for generating hashes
@@ -64,17 +64,5 @@ package object authtools {
     hasher update ( salt getBytes )
     (hasher.digest.map(Integer.toHexString(_)).mkString, salt)
   }
-  def randomString(alphabet: String)(n: Int)(random: scala.util.Random): String = {
-    require(n > 0, "Desired length must be positive")
-    require(alphabet != "", "Alphabet must contain characters")
-    Stream.continually(random.nextInt(alphabet.length))
-      .map(alphabet)
-      .take(n)
-      .mkString
-  }
-
-
-  def randomAlphanumericString(n: Int)(random: scala.util.Random): String =
-    randomString("abcdefghijklmnopqrstuvwxyz0123456789")(n)(random)
 
 }

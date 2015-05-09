@@ -1,6 +1,6 @@
 import java.security.MessageDigest
 
-import me.hawkweisman.common.authtools
+import me.hawkweisman.util.auth
 import org.scalatest.{Matchers, FlatSpec}
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
 import org.scalacheck.Arbitrary._
@@ -15,7 +15,7 @@ class AuthSpec extends FlatSpec with GeneratorDrivenPropertyChecks with Matchers
         val hasher = MessageDigest.getInstance("SHA-512")
         hasher update (pass getBytes)
         hasher update (salt getBytes)
-        authtools.hash(pass, salt = salt) ==(hasher.digest.map(Integer.toHexString(_)).mkString, salt)
+        auth.hash(pass, salt = salt) ==(hasher.digest.map(Integer.toHexString(_)).mkString, salt)
       }
     }
   }
@@ -25,7 +25,7 @@ class AuthSpec extends FlatSpec with GeneratorDrivenPropertyChecks with Matchers
         val hasher = MessageDigest.getInstance("SHA-512")
         hasher update (pass getBytes)
         hasher update (salt getBytes)
-        authtools.hash(pass, salt = salt, algorithm="SHA-512") ==(hasher.digest.map(Integer.toHexString(_)).mkString, salt)
+        auth.hash(pass, salt = salt, algorithm="SHA-512") ==(hasher.digest.map(Integer.toHexString(_)).mkString, salt)
       }
     }
   }
@@ -35,35 +35,35 @@ class AuthSpec extends FlatSpec with GeneratorDrivenPropertyChecks with Matchers
         val hasher = MessageDigest.getInstance("SHA-256")
         hasher update (pass getBytes)
         hasher update (salt getBytes)
-        authtools.hash(pass, salt = salt, algorithm="SHA-256") ==(hasher.digest.map(Integer.toHexString(_)).mkString, salt)
+        auth.hash(pass, salt = salt, algorithm="SHA-256") ==(hasher.digest.map(Integer.toHexString(_)).mkString, salt)
       }
     }
   }
   "The randomString() method" should "generate strings of the correct length" in {
     forAll {
       (length: Int) => whenever (length > 0) {
-        authtools.randomAlphanumericString(length)(new scala.util.Random).length == length
+        auth.randomAlphanumericString(length)(new scala.util.Random).length == length
       }
     }
   }
   it should "generate strings in the alphabet [abcdefghijklmnopqrstuvwxyz0123456789]*" in {
     forAll {
       (length: Int) => whenever (length > 0) {
-        authtools.randomAlphanumericString(length)(new scala.util.Random) should fullyMatch regex """[abcdefghijklmnopqrstuvwxyz0123456789]*"""
+        auth.randomAlphanumericString(length)(new scala.util.Random) should fullyMatch regex """[abcdefghijklmnopqrstuvwxyz0123456789]*"""
       }
     }
   }
   "The randomAlphanumericString() method" should "generate strings of the correct length" in {
     forAll {
       (alphabet: String, length: Int) => whenever (alphabet != "" && length > 0) {
-        authtools.randomString(alphabet)(length)(new scala.util.Random).length == length
+        auth.randomString(alphabet)(length)(new scala.util.Random).length == length
       }
     }
   }
   it should "generate strings in the specified alphabet" in {
     forAll {
       (alphabet: String, length: Int) => whenever (alphabet != "" && length > 0) {
-        authtools.randomString(alphabet)(length)(new scala.util.Random) should fullyMatch regex s"""[$alphabet]*"""
+        auth.randomString(alphabet)(length)(new scala.util.Random) should fullyMatch regex s"""[$alphabet]*"""
       }
     }
   }
