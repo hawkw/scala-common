@@ -40,7 +40,7 @@ package object math {
       val nearest = xs minBy dist
       k match {
         case 0 => neighbors + nearest
-        case _ => _kNearest(k - 1, xs - nearest, neighbors + nearest)
+        case _ => findKNearest(k - 1, xs - nearest, neighbors + nearest)
       }
     }
     findKNearest(k, xs, Set())
