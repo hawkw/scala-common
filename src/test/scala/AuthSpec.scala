@@ -9,10 +9,13 @@ import org.scalacheck.Arbitrary._
  */
 class AuthSpec extends FlatSpec with GeneratorDrivenPropertyChecks with Matchers {
 
+  val sha512 = "SHA-512"
+  val sha256 = "SHA-256"
+
   "The hash() method" should "generate correct SHA-512 hashes" in {
     forAll {
       (pass: String, salt: String) => whenever(pass.length > 0 && salt.length() > 0) {
-        val hasher = MessageDigest.getInstance("SHA-512")
+        val hasher = MessageDigest getInstance sha512
         hasher update (pass getBytes)
         hasher update (salt getBytes)
         auth.hash(pass, salt = salt) ==(hasher.digest.map(Integer.toHexString(_)).mkString, salt)
@@ -22,20 +25,20 @@ class AuthSpec extends FlatSpec with GeneratorDrivenPropertyChecks with Matchers
   it should "generate correct SHA-512 hashes when passed SHA-512 explicitly" in {
     forAll {
       (pass: String, salt: String) => whenever(pass.length > 0 && salt.length() > 0) {
-        val hasher = MessageDigest.getInstance("SHA-512")
+        val hasher = MessageDigest getInstance sha512
         hasher update (pass getBytes)
         hasher update (salt getBytes)
-        auth.hash(pass, salt = salt, algorithm="SHA-512") ==(hasher.digest.map(Integer.toHexString(_)).mkString, salt)
+        auth.hash(pass, salt = salt, algorithm=sha512) == (hasher.digest.map(Integer.toHexString(_)).mkString, salt)
       }
     }
   }
   it should "generate correct SHA-256 hashes" in {
     forAll {
       (pass: String, salt: String) => whenever(pass.length > 0 && salt.length() > 0) {
-        val hasher = MessageDigest.getInstance("SHA-256")
+        val hasher = MessageDigest getInstance sha256
         hasher update (pass getBytes)
         hasher update (salt getBytes)
-        auth.hash(pass, salt = salt, algorithm="SHA-256") ==(hasher.digest.map(Integer.toHexString(_)).mkString, salt)
+        auth.hash(pass, salt = salt, algorithm=sha256) == (hasher.digest.map(Integer.toHexString(_)).mkString, salt)
       }
     }
   }
