@@ -1,3 +1,5 @@
+lazy val root = (project in file(".")).enablePlugins(GitVersioning)
+
 name := "util"
 organization := "me.hawkweisman"
 
@@ -8,4 +10,10 @@ libraryDependencies ++= Seq(
   "org.scalatest"   %% "scalatest"  % "2.2.4"   % "test"
 )
 
-licenses += ("MIT", url("https://raw.githubusercontent.com/hawkw/scala-common/master/LICENSE"))
+bintraySettings ++ Seq(
+  licenses += ("MIT", url("https://raw.githubusercontent.com/hawkw/scala-common/master/LICENSE")),
+  publishMavenStyle := true,
+  bintray.Keys.repository in bintray.Keys.bintray := "maven",
+  bintray.Keys.bintrayOrganization in bintray.Keys.bintray := None,
+  bintray.Keys.packageLabels in bintray.Keys.bintray := Seq("Scala", "Utilities")
+)
