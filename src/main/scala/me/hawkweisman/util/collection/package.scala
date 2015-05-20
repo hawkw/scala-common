@@ -17,7 +17,7 @@ package object collection {
      * Constructs a new infinite [[Stream]] that repeats this sequence of values.
      * @return an infinite stream of repetitions of this sequence
      */
-    def repeat(s: Seq[A]): Stream[A] = Stream.continually(self).flatten
+    def repeat: Stream[A] = Stream.continually(self).flatten
   }
 
 }
