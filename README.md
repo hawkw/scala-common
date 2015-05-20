@@ -4,4 +4,5 @@
 [![License](http://img.shields.io/:license-mit-blue.svg)](http://doge.mit-license.org) 
 [ ![Download](https://api.bintray.com/packages/hawkw/maven/util/images/download.svg) ](https://bintray.com/hawkw/maven/util/_latestVersion)
 
-General-purpose Scala code bits
+General-purpose Scala code bits. Think of this as being like Apache Commons but little and in Scala.
+
