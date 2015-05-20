@@ -9,13 +9,14 @@ import me.hawkweisman.util.collection.RepeatableSeq
 class CollectionSpec extends FlatSpec with GeneratorDrivenPropertyChecks with Matchers {
 
   "A RepeatableSeq" should "repeat an arbitrary sequence of integers to an arbitrary length" in {
-    forAll { (s: Seq[Int], length: Int) =>
-      val expected = for {
-        i <- 0 to length
-        e <- s (i % s.length)
-      } yield e
+    forAll { (s: Seq[Int]) =>
+      whenever (s.nonEmpty && s.length <= 50) {  // 50 seems reasonable?
+        val expected = for {
+          i <- 0 to 49
+        } yield s (i % s.length)
 
-      s take length shouldEqual expected
+        s.repeat.take(50) shouldEqual expected.toStream
+      }
     }
   }
 
