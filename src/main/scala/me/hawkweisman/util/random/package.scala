@@ -53,4 +53,24 @@ package object random {
     } else { "" }
     s"$first$rest"
   }
+
+  def weightedPick2[T](a: (Double, () => T), b: (Double, () => T))(random: scala.util.Random): T = {
+    require(a._1 + b._1 == 1.0, "The sum of the weights for a and b must equal 1.0")
+    require(a._1 > 0, "A must be greater than zero.")
+    require(b._1 > 0, "B must be greater than zero.")
+    val choices = Seq(a,b) sortWith { case ((x,_), (y,_)) => x > y }
+    random.nextDouble match {
+      case i if i <= choices(0)._1 => choices(0)._2()
+      case _                       => choices(1)._2()
+    }
+  }
+
+  def weightedPickN[T](choices: List[(Double, () => T)])(random: scala.util.Random): T = choices
+  .sortWith { case ((x,_), (y,_)) => x > y } match {
+    case max :: min :: Nil => weightedPick2(max,min)(random)
+    case max :: rest =>
+      val weightRest = rest map (_._1) sum
+      val choiceRest = () => { weightedPickN(rest)(random) }
+      weightedPick2(max, (weightRest, choiceRest))(random)
+  }
 }

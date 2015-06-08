@@ -1,6 +1,6 @@
 lazy val root = (project in file(".")).enablePlugins(GitVersioning)
 
-git.useGitDescribe := true
+//git.useGitDescribe := true
 
 name := "util"
 organization := "me.hawkweisman"
