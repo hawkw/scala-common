@@ -98,10 +98,10 @@ package object random {
     choices.sortWith { case ((x,_), (y,_)) => x > y } match {
       case max :: min :: Nil => weightedPick2(max,min)(random)
       case max :: rest =>
-        val weightRest = rest map (_._1) sum
-        require(weightRest + max._1 == 1.0, "The sum of each weight must equal 1.0")
+        val remainingWeight: Double = rest.map(_._1).sum
+        require(remainingWeight + max._1 == 1.0, "The sum of each weight must equal 1.0")
         val choiceRest = () => { weightedPickN(rest)(random) }
-        weightedPick2(max, (weightRest, choiceRest))(random)
+        weightedPick2(max, (remainingWeight, choiceRest))(random)
     }
   }
 
