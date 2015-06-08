@@ -1,7 +1,7 @@
 import java.security.MessageDigest
 
-import org.scalatest.Matchers
 import org.scalatest.FlatSpec
+import org.scalatest.Matchers
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
 
 import org.scalacheck.Arbitrary._

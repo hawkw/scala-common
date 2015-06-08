@@ -1,6 +1,8 @@
 package me.hawkweisman.util
 
-import java.security.{NoSuchAlgorithmException, MessageDigest}
+import java.security.MessageDigest
+import java.security.NoSuchAlgorithmException
+
 import scala.language.postfixOps
 
 /**
@@ -8,6 +10,8 @@ import scala.language.postfixOps
  * @author Hawk Weisman <hi@hawkweisman.me>
  */
 package object auth {
+  
+  val defaultHashLength = 16
 
   /**
    * General-purpose password hashing method. This can be used for generating hashes
@@ -57,7 +61,7 @@ package object auth {
   def hash(
    pass: String,
    algorithm: String = "SHA-512",
-   salt: String = random.randomAlphanumericString(16)(new scala.util.Random)
+   salt: String = random.randomAlphanumericString(defaultHashLength)(new scala.util.Random)
    ): (String,String) = {
     val hasher = MessageDigest.getInstance(algorithm)
     hasher update ( pass getBytes )
