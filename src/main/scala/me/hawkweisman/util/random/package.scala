@@ -1,5 +1,7 @@
 package me.hawkweisman.util
 
+import scala.util.Random
+
 /**
  * Random
  * ======
@@ -16,7 +18,7 @@ package object random {
    * @param random an instance of [[scala.util.Random]]
    * @return a [[String]] of length _n_
    */
-  def randomString(alphabet: String)(n: Int)(random: scala.util.Random): String = {
+  def randomString(alphabet: String)(n: Int)(random: Random): String = {
     require(n > 0, "Desired length must be positive")
     require(alphabet != "", "Alphabet must contain characters")
     Stream.continually(random.nextInt(alphabet.length))
@@ -37,7 +39,7 @@ package object random {
    * @param random an instance of [[scala.util.Random]]
    * @return a [[String]] of length _n_
    */
-  def randomAlphanumericString(n: Int)(random: scala.util.Random): String =
+  def randomAlphanumericString(n: Int)(random: Random): String =
     randomString("abcdefghijklmnopqrstuvwxyz0123456789")(n)(random)
 
   /**
@@ -46,7 +48,7 @@ package object random {
    * @param random an instance of [[scala.util.Random]]
    * @return a [[String]] of length _n_
    */
-  def randomJavaIdent(n: Int)(random: scala.util.Random): String = {
+  def randomJavaIdent(n: Int)(random: Random): String = {
     val first = randomString("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_$")(1)(random)
     val rest = if (n > 1) {
       randomString("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_$12345667890")(n - 1)(random)
@@ -68,15 +70,15 @@ package object random {
    * @param  random an instance of [[scala.util.Random]]
    * @return the result of evaluating either `a` or `b`
    */
-  def weightedPick2[T](a: (Double, () => T), b: (Double, () => T))(random: scala.util.Random): T = {
+  def weightedPick2[T](a: (Double, () => T), b: (Double, () => T))(random: Random): T = {
     require(a._1 + b._1 == 1.0, "The sum of the weights for a and b must equal 1.0")
     require(a._1 > 0, "A must be greater than zero.")
     require(b._1 > 0, "B must be greater than zero.")
     val choices = Seq(a,b) sortWith { case ((x,_), (y,_)) => x > y }
     random.nextDouble match {
-      case i if i <= choices(0)._1 => choices(0)._2()
-      case _                       => choices(1)._2()
-    }
+      case i if i <= choices(0)._1 => choices(0)._2() // TODO: consider just making this return
+      case _                       => choices(1)._2() // the chosen function instead so it can
+    }                                                 // be evaluated at the call site?
   }
 
   /**
@@ -91,12 +93,13 @@ package object random {
    * @param  random an instance of [[scala.util.Random]]
    * @return the result of evaluating the chosen generator
    */
-  def weightedPickN[T](choices: List[(Double, () => T)])(random: scala.util.Random): T = {
+  def weightedPickN[T](choices: List[(Double, () => T)])(random: Random): T = {
     require(choices.length >= 2, "Two or more choices must be provided.")
     choices.sortWith { case ((x,_), (y,_)) => x > y } match {
       case max :: min :: Nil => weightedPick2(max,min)(random)
       case max :: rest =>
         val weightRest = rest map (_._1) sum
+        require(weightRest + max._1 == 1.0, "The sum of each weight must equal 1.0")
         val choiceRest = () => { weightedPickN(rest)(random) }
         weightedPick2(max, (weightRest, choiceRest))(random)
     }
