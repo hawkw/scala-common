@@ -65,12 +65,15 @@ package object random {
     }
   }
 
-  def weightedPickN[T](choices: List[(Double, () => T)])(random: scala.util.Random): T = choices
-  .sortWith { case ((x,_), (y,_)) => x > y } match {
-    case max :: min :: Nil => weightedPick2(max,min)(random)
-    case max :: rest =>
-      val weightRest = rest map (_._1) sum
-      val choiceRest = () => { weightedPickN(rest)(random) }
-      weightedPick2(max, (weightRest, choiceRest))(random)
+  def weightedPickN[T](choices: List[(Double, () => T)])(random: scala.util.Random): T = {
+    require(choices.length >= 2, "Two or more choices must be provided.")
+    choices.sortWith { case ((x,_), (y,_)) => x > y } match {
+      case max :: min :: Nil => weightedPick2(max,min)(random)
+      case max :: rest =>
+        val weightRest = rest map (_._1) sum
+        val choiceRest = () => { weightedPickN(rest)(random) }
+        weightedPick2(max, (weightRest, choiceRest))(random)
+    }
   }
+
 }
