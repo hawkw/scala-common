@@ -1,10 +1,10 @@
 import java.security.MessageDigest
 
+import org.scalacheck.Arbitrary._
+
 import org.scalatest.FlatSpec
 import org.scalatest.Matchers
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
-
-import org.scalacheck.Arbitrary._
 
 import me.hawkweisman.util.auth.hash
 /**
