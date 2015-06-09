@@ -58,4 +58,10 @@ package object math {
   def kNearest(k: Int, target: Long, xs: Set[Long]): Set[Long] =
     kNearest[Long,Long](k, xs)((it: Long) => abs(it - target))
 
+  def normalizeAt[T](at: T)(xs: Seq[T])(implicit num: Fractional[T]): Seq[T] = {
+    import num.mkNumericOps
+    val sigma  = (xs sum ) * at
+    xs map ( x => x / sigma )
+  }
+
 }
