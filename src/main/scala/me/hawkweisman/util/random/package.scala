@@ -70,15 +70,16 @@ package object random {
    * @param  random an instance of [[scala.util.Random]]
    * @return the result of evaluating either `a` or `b`
    */
-  def weightedPick2[T](a: (Double, () => T), b: (Double, () => T))(random: Random): T = {
-    require(a._1 + b._1 == 1.0, "The sum of the weights for a and b must equal 1.0")
-    require(a._1 > 0, "A must be greater than zero.")
-    require(b._1 > 0, "B must be greater than zero.")
-    val choices = Seq(a,b) sortWith { case ((x,_), (y,_)) => x > y }
-    random.nextDouble match {
-      case i if i <= choices(0)._1 => choices(0)._2() // TODO: consider just making this return
-      case _                       => choices(1)._2() // the chosen function instead so it can
-    }                                                 // be evaluated at the call site?
+  def weightedPick2[T](a: (Double, () => T), b: (Double, () => T))(random: Random): T = (a, b) match {
+    case ((aWeight,aFunc), (bWeight, bFunc)) =>
+      require(aWeight + bWeight == 1.0, "The sum of the weights for a and b must equal 1.0")
+      require(aWeight > 0, "Weight for a must be greater than zero.")
+      require(bWeight > 0, "Weight for b must be greater than zero.")
+      val choices = Seq(a,b) sortWith { case ((x,_), (y,_)) => x > y }
+      random.nextDouble() match {
+        case i if i <= choices.head._1 => choices.head._2() // TODO: consider just making this return
+        case _                         => choices(1)._2() // the chosen function instead so it can
+      }                                                 // be evaluated at the call site?
   }
 
   /**
@@ -102,6 +103,7 @@ package object random {
         require(remainingWeight + max._1 == 1.0, "The sum of each weight must equal 1.0")
         val choiceRest = rest map { case ((weight, f)) => (weight / 1.0, f) }
         weightedPick2(max, (remainingWeight, () => { weightedPickN(choiceRest)(random) }))(random)
+      case Nil => throw new IllegalArgumentException("cannot pick from empty list")
     }
   }
 
