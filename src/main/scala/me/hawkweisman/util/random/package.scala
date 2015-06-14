@@ -78,9 +78,9 @@ package object random {
       val choices = Seq(a,b) sortWith { case ((x,_), (y,_)) => x > y }
       random.nextDouble() match {
         case i: Double
-          if i <= choices.head._1 => choices(0)._2() // TODO: consider just making this return
-        case _                    => choices(1)._2() // the chosen function instead so it can
-      }                                              // be evaluated at the call site?
+          if i <= choices(0)._1 => choices(0)._2() // TODO: consider just making this return
+        case _                  => choices(1)._2() // the chosen function instead so it can
+      }                                            // be evaluated at the call site?
   }
 
   /**
