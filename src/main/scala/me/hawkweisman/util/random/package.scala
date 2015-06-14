@@ -32,7 +32,8 @@ package object random {
    * letters and numbers.
    *
    * Identifiers are generated based on
-   * [[https://docs.oracle.com/javase/specs/jls/se8/html/jls-3.html#jls-3.8 Section 3.8]]
+   * [[https://docs.oracle.com/javase/specs/jls/se8/html/jls-3.html#jls-3.8
+   * Section 3.8]]
    * of the Java SE 8 spec.
    *
    * @param n the length for the [[String]]
@@ -49,9 +50,12 @@ package object random {
    * @return a [[String]] of length _n_
    */
   def randomJavaIdent(n: Int)(random: Random): String = {
-    val first = randomString("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_$")(1)(random)
+    val first = randomString(
+      "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_$")(1)(random)
     val rest = if (n > 1) {
-      randomString("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_$12345667890")(n - 1)(random)
+      randomString(
+        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_$12345667890"
+      )(n - 1)(random)
     } else { "" }
     s"$first$rest"
   }
@@ -70,41 +74,53 @@ package object random {
    * @param  random an instance of [[scala.util.Random]]
    * @return the result of evaluating either `a` or `b`
    */
-  def weightedPick2[T](a: (Double, () => T), b: (Double, () => T))(random: Random): T = (a, b) match {
+  def weightedPick2[T](a: (Double, () => T), b: (Double, () => T))
+                      (random: Random): T = (a, b) match {
     case ((aWeight,aFunc), (bWeight, bFunc)) =>
-      require(aWeight + bWeight == 1.0, "The sum of the weights for a and b must equal 1.0")
+      require(aWeight + bWeight == 1.0,
+        "The sum of the weights for a and b must equal 1.0")
       require(aWeight > 0, "Weight for a must be greater than zero.")
       require(bWeight > 0, "Weight for b must be greater than zero.")
       val choices = Seq(a,b) sortWith { case ((x,_), (y,_)) => x > y }
       random.nextDouble() match {
         case i: Double
-          if i <= choices(0)._1 => choices(0)._2() // TODO: consider just making this return
-        case _                  => choices(1)._2() // the chosen function instead so it can
-      }                                            // be evaluated at the call site?
+          if i <= choices(0)._1 => choices(0)._2()
+        case _                  => choices(1)._2()
+        // TODO: consider just making this return the chosen function
+        // so that it can be evaluated at the call site?
+      }
   }
 
   /**
    * Chooses one of _n_ weighted random options.
    *
-   * The choicees are represented as a list of tuples containing a weight (a double-precision
-   * number between 0.0 and 1.0) and a function `() => T`. These functions will not be
-   * evaluated unless chosen, allowing computationally expensive choices to be generated only
-   * when needed.
+   * The choicees are represented as a list of tuples containing a weight
+   * (a double-precision number between 0.0 and 1.0) and a function
+   * `() => T`. These functions will not be evaluated unless chosen, allowing
+   * computationally expensive choices to be generated only when needed.
    *
-   * @param  choices `List[(Double, () => T)]` a list of (weight, result) choices from which to select
+   * @param  choices `List[(Double, () => T)]` a list of (weight, result)
+   *                 choices from which to select
    * @param  random an instance of [[scala.util.Random]]
    * @return the result of evaluating the chosen generator
    */
   def weightedPickN[T](choices: List[(Double, () => T)])(random: Random): T = {
-    require(choices.length >= 2, "Two or more choices must be provided.")
+    require(choices.length >= 2,
+      "Two or more choices must be provided.")
     choices.sortWith { case ((x,_), (y,_)) => x > y } match {
       case max :: min :: Nil => weightedPick2(max,min)(random)
       case max :: rest =>
-        val remainingWeight: Double = rest.map(_._1).sum
-        require(remainingWeight + max._1 == 1.0, "The sum of each weight must equal 1.0")
+        val remainingWeight: Double = rest
+          .map{ case ((weight, _)) => weight }
+          .sum
+        require(remainingWeight + max._1 == 1.0,
+          "The sum of each weight must equal 1.0")
         val choiceRest = rest map { case ((weight, f)) => (weight / 1.0, f) }
-        weightedPick2(max, (remainingWeight, () => { weightedPickN(choiceRest)(random) }))(random)
-      case Nil => throw new IllegalArgumentException("cannot pick from empty list")
+        weightedPick2(max,
+          (remainingWeight, () => { weightedPickN(choiceRest)(random) })
+        )(random)
+      case Nil =>
+        throw new IllegalArgumentException("cannot pick from empty list")
     }
   }
 
