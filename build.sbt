@@ -7,6 +7,12 @@ organization := "me.hawkweisman"
 
 scalaVersion := "2.11.6"
 
+val gitHeadCommitSha = settingKey[String]("current git commit SHA")
+
+gitHeadCommitSha in ThisBuild := Process("git rev-parse HEAD").lines.head
+
+version in ThisBuild := "0.0.1-" + gitHeadCommitSha.value
+
 libraryDependencies ++= Seq(
   "org.scalacheck"  %% "scalacheck" % "1.12.2"  % "test",
   "org.scalatest"   %% "scalatest"  % "2.2.4"   % "test"
