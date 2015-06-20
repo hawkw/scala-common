@@ -12,4 +12,5 @@ resolvers += "jgit-repo" at "http://download.eclipse.org/jgit/maven"
 addSbtPlugin("com.typesafe.sbt" % "sbt-git" % "0.8.4")
 
 addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.0.4")
+
 addSbtPlugin("com.codacy" % "sbt-codacy-coverage" % "1.0.3")
