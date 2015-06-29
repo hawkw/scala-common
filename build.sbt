@@ -1,6 +1,6 @@
 name                := "util"
 organization        := "me.hawkweisman"
-scalaVersion        := "2.11.6"
+scalaVersion        := "2.11.7"
 val projectVersion   = "0.0.2" // this is where you would set the current release version
 
 val gitHeadCommitSha = settingKey[String]("current git commit short SHA")
