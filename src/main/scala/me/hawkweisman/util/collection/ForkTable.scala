@@ -8,10 +8,10 @@ trait ForkTable[K,V]
   extends AbstractMap[K,V]
   with DefaultMap[K,V] {
 
-  type Self <: ForkTable[K,V]
+  type SelfType <: ForkTable[K,V]
 
-  protected def parent: Option[Self]
-  protected def children: Seq[Self]
+  protected def parent: Option[SelfType]
+  protected def children: Seq[SelfType]
   protected def whiteouts: Set[K]
   protected def back: Map[K,V]
 
@@ -46,21 +46,21 @@ trait ForkTable[K,V]
    *         the parent table, or [[scala.None None]] if this is
    *         the root level of the tree
    */
-  def getParent: Option[Self] = parent
+  def getParent: Option[SelfType] = parent
 
   /**
    * @return a sequence of this level's child ForkTables.
    */
   def getChildren: Seq[ForkTable[K,V]] = children
 
-  protected def removeChild(other: Self): Self
+  protected def removeChild(other: SelfType): SelfType
 
-  protected def addChild(other: Self): Self
+  protected def addChild(other: SelfType): SelfType
 
   /**
    * @return the number of keys defined in this level plus all previous levels
    */
-  def chainSize: Int =  size + (parent map (_.chainSize) getOrElse 0) 
+  def chainSize: Int = size + (parent map (_.chainSize) getOrElse 0)
 
   /**
    * Change the parent corresponding to this scope.
@@ -68,26 +68,7 @@ trait ForkTable[K,V]
    * @throws IllegalArgumentException if the specified parent was invalid
    */
   @throws[IllegalArgumentException]("if the specified parent was invalid")
-  def reparent(nParent: Self): Self
-
-  /**
-   * Returns the value corresponding to the given key.
-   *
-   * @param  key the key to look up
-   * @return a [[scala.Option Option]] containing the value of the
-   *         key, or [[scala.None None]] if it is undefined.
-   */
-  @tailrec
-  final override def get(key: K): Option[V] = whiteouts contains key match {
-    case true  => None
-    case false => back get key match {
-      case value: Some[V] => value
-      case None           => parent match {
-        case None         => None
-        case Some(thing)  => thing.get(key)
-      }
-    }
-  }
+  def reparent(nParent: SelfType): SelfType
 
   /**
    * Removes a binding from the map and returns the value
@@ -106,7 +87,7 @@ trait ForkTable[K,V]
    */
   def remove(key: K): Option[V]
 
-  def freeze(): Self
+  def freeze(): SelfType
 
   /** @return the number of entries in this level over the table.
    */
@@ -127,14 +108,7 @@ trait ForkTable[K,V]
    * @param key the key to search for
    * @return true if this or any of its' parents contains the selected key.
    */
-  @tailrec final def chainContains(key: K): Boolean = back contains key match {
-    case true                            => true
-    case false if whiteouts contains key => false
-    case false                           => parent match {
-      case None        => false
-      case Some(thing) => thing.chainContains(key)
-    }
-  }
+  def chainContains(key: K): Boolean
 
   /**
    * @param  key the key to look up
@@ -159,14 +133,7 @@ trait ForkTable[K,V]
    * @return true if there exists a pair for which the
    *         predicate holds, false otherwise.
    */
-  @tailrec
-  final def chainExists(p: ((K, V)) => Boolean): Boolean = back exists p match {
-    case true  => true // this method could look much simpler were it not for `tailrec`
-    case false => parent match {
-      case None        => false
-      case Some(thing) => thing.chainExists(p)
-    }
-  }
+ def chainExists(p: ((K, V)) => Boolean): Boolean
 
   /**
    * Look up the given key

@@ -3,7 +3,9 @@ package collection.mutable
 
 import me.hawkweisman.util.collection.ForkTable
 
+import scala.annotation.tailrec
 import scala.collection.mutable
+import scala.collection
 
 /**
  * Created by hawk on 6/29/15.
@@ -12,21 +14,25 @@ class ForkHashMap[K,V](
                         protected var parent: Option[ForkHashMap[K,V]] = None,
                         protected var children: Seq[ForkHashMap[K,V]] = Seq()
                         ) extends ForkTable[K,V] {
-  override type Self = ForkHashMap[K,V]
+
+  override type SelfType = ForkHashMap[K,V]
+  protected var back: Map[K,V] = Map()
+  protected var whiteouts: Set[K] = Set()
+
   /**
    * Change the parent corresponding to this scope.
    * @param nParent the new parent
    * @throws IllegalArgumentException if the specified parent was invalid
    */
-  override def reparent(nParent: Self): Self = {
-    require(nParent != this, "Scope cannot mount itself as parent!")
+  override def reparent(nParent: SelfType): SelfType = {
+    require(nParent != this, "Scope cannot mount itSelfType as parent!")
     parent foreach ( _ removeChild this )
     nParent addChild this
     parent = Some(nParent)
     this
   }
 
-  override def freeze(): Self = {
+  override def freeze(): SelfType = {
     parent foreach { oldParent =>
       this.parent = None
       this.back ++= oldParent.iterator withFilter {
@@ -45,23 +51,19 @@ class ForkHashMap[K,V](
    *
    * @return a new child of this scope
    */
-  override def fork(): Self = {
-    val c = new Self(parent = Some(this))
+  override def fork(): SelfType = {
+    val c = new SelfType(parent = Some(this))
     children = children :+ c
     c
   }
 
-  override protected def addChild(other: Self): Self = {
+  override protected def addChild(other: SelfType): SelfType = {
     children = children :+ other; this
   }
 
-  override protected def removeChild(other: Self): Self = {
+  override protected def removeChild(other: SelfType): SelfType = {
     this.children = children.filter({other != _}); this
   }
-
-  override protected val back = mutable.Map()[K,V]
-
-  override protected val whiteouts = mutable.Set()[K]
 
   /**
    * Inserts a key-value pair from the map.
@@ -81,7 +83,9 @@ class ForkHashMap[K,V](
    */
   override def put(key: K, value: V): Option[V] = {
     if (whiteouts contains key) whiteouts -= key
-    back.put(key, value)
+    val oldV = back get key
+    back = back updated (key, value)
+    oldV
   }
 
   /**
@@ -99,8 +103,38 @@ class ForkHashMap[K,V](
    * @return a [[scala.Option Option]] containing the value of the
    *         key, or [[None None]] if it is undefined.
    */
-  override def remove(key: K): Option[V] = back remove key orElse {
-    parent flatMap (_ get key) map {(v) => whiteouts += key; v}
+  override def remove(key: K): Option[V] = back get key map { v =>
+    back -= key; v
+  } orElse {
+    parent flatMap { _ get key } map { v => whiteouts += key; v }
   }
 
+ @tailrec override final def chainContains(key: K): Boolean =
+   back contains key match {
+    case true                            => true
+    case false if whiteouts contains key => false
+    case false                           => parent match {
+      case None        => false
+      case Some(thing) => thing.chainContains(key)
+    }
+  }
+  @tailrec override final def chainExists(p: ((K, V)) => Boolean): Boolean =
+    back exists p match {
+      case true  => true // this method could look much simpler were it not for `tailrec`
+      case false => parent match {
+        case None        => false
+        case Some(thing) => thing.chainExists(p)
+      }
+    }
+  @tailrec final override def get(key: K): Option[V] =
+    whiteouts contains key match {
+      case true  => None
+      case false => back get key match {
+        case value: Some[V] => value
+        case None           => parent match {
+          case None         => None
+          case Some(thing)  => thing.get(key)
+        }
+      }
+    }
 }
