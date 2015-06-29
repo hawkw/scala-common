@@ -1,12 +1,16 @@
-import org.scalatest.{Matchers, FlatSpec}
-import org.scalatest.prop.GeneratorDrivenPropertyChecks
+package me.hawkweisman.util
+package tests
 
-import me.hawkweisman.util.collection.RepeatableSeq
+import collection.RepeatableSeq
+import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.prop.GeneratorDrivenPropertyChecks
 
 /**
  * Created by hawk on 5/20/15.
  */
-class CollectionSpec extends FlatSpec with GeneratorDrivenPropertyChecks with Matchers {
+class CollectionSpec extends FlatSpec
+  with GeneratorDrivenPropertyChecks
+  with Matchers {
 
   "A RepeatableSeq" should "repeat an arbitrary sequence of integers to an arbitrary length" in {
     forAll { (s: Seq[Int]) =>

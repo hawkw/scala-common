@@ -1,16 +1,18 @@
+package me.hawkweisman.util
+package tests
+
 import java.security.MessageDigest
 
-import org.scalacheck.Arbitrary._
-
-import org.scalatest.FlatSpec
-import org.scalatest.Matchers
+import auth.hash
+import org.scalatest.{Matchers, FlatSpec}
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
 
-import me.hawkweisman.util.auth.hash
 /**
  * Created by hawk on 3/12/15.
  */
-class AuthSpec extends FlatSpec with GeneratorDrivenPropertyChecks with Matchers {
+class AuthSpec extends FlatSpec
+  with GeneratorDrivenPropertyChecks
+  with Matchers {
 
   val sha512 = "SHA-512"
   val sha256 = "SHA-256"
