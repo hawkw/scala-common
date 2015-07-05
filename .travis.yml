@@ -38,6 +38,7 @@ deploy:
   file_glob: true
   on:
     repo: hawkw/scala-common
+    scala: 2.11.7
     tags: true
 after_deploy:
   - sbt publish
