@@ -27,7 +27,7 @@ after_success:
 - |
   test "${TRAVIS_PULL_REQUEST}" = 'false' && test "${TRAVIS_SCALA_VERSION}" = '2.11.7' && sh "$TRAVIS_BUILD_DIR/.travis/bintray-credentials.sh" && sbt 'set version := version.value + "+" + System.getenv("TRAVIS_BUILD_NUMBER")' publish
 before_deploy:
-  - sbt package
+  - sbt clean package
   - export RELEASE_JAR=$(ls target/scala-2.11/util_2.11*.jar)
   - echo "deploying $RELEASE_JAR to GitHub releases"
 deploy:
