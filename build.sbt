@@ -1,17 +1,7 @@
 name                := "util"
 organization        := "me.hawkweisman"
+version             := "0.0.3" // the current release version
 scalaVersion        := "2.11.7"
-
-// versioning stuff
-val projectVersion   = "0.0.3" // the current release version
-val gitHeadCommitSha = settingKey[String]("current git commit short SHA")
-
-gitHeadCommitSha in ThisBuild := Process("git rev-parse --short HEAD")
-  .lines
-  .headOption
-  .getOrElse("")
-
-version in ThisBuild := s"$projectVersion-${gitHeadCommitSha.value}"
 
 autoAPIMappings := true
 
