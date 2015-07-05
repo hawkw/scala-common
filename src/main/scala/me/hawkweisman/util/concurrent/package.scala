@@ -5,6 +5,24 @@ import scala.util.{Try,Success,Failure}
 
 package object concurrent {
 
-  implicit def tryToFuture[T](t: Try[T]): Future[T] = Promise().complete(t).future
+  /**
+   * Implicitly convert a [[scala.util.Try Try]] to a
+   * [[scala.concurrent.Future Future]].
+   *
+   * This is primarily for use when you are `flatMap`ping over multiple
+   * `Future`s and you want to include some non-async operations.
+   *
+   * For best performance, the operation that returns a `Try` rather than
+   * a `Future` should either be the first item `flatMap`ped over, or should
+   * have already been performed and stored in a local value. If it is the
+   * result of a function call and included after multiple async calls,
+   * I believe all the async operations will block on that call.
+   *
+   * @param  t A [[scala.util.Try Try]]
+   * @return that [[scala.util.Try Try]] converted to a
+   *         [[scala.concurrent.Future]]
+   */
+  implicit def tryToFuture[T](t: Try[T]): Future[T]
+    = Promise().complete(t).future
 
 }

@@ -4,6 +4,8 @@ package me.hawkweisman.util
  * ==========
  *
  * Contains various personal utilities for working on collections.
+ *
+ * @author Hawk Weisman
  */
 package object collection {
 
