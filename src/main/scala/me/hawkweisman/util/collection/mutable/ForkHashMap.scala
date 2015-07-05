@@ -11,9 +11,9 @@ import scala.collection
  * Created by hawk on 6/29/15.
  */
 class ForkHashMap[K,V](
-                        protected var parent: Option[ForkHashMap[K,V]] = None,
-                        protected var children: Seq[ForkHashMap[K,V]] = Seq()
-                        ) extends ForkTable[K,V] {
+  protected var parent: Option[ForkHashMap[K,V]] = None,
+  protected var children: Seq[ForkHashMap[K,V]] = Seq()
+  ) extends ForkTable[K,V] {
 
   override type SelfType = ForkHashMap[K,V]
   protected var back: Map[K,V] = Map()
@@ -69,7 +69,7 @@ class ForkHashMap[K,V](
    * Inserts a key-value pair from the map.
    *
    * If the key already had a value present in the map, that
-   * value is returned. Otherwise, [[None None]] is returned.
+   * value is returned. Otherwise, [[scala.None None]] is returned.
    *
    * If the key is currently whited out (i.e. it was defined
    * in a lower level of the map and was removed) then it will
@@ -78,7 +78,7 @@ class ForkHashMap[K,V](
    * @param key a key
    * @param value the value to associate with the key
    * @return an [[scala.Option Option]] containing the previous
-   *         value associated with that key, or [[None None]]
+   *         value associated with that key, or [[scala.None None]]
    *         if the key was undefined
    */
   override def put(key: K, value: V): Option[V] = {
@@ -101,7 +101,7 @@ class ForkHashMap[K,V](
    *
    * @param  key the key to remove.
    * @return a [[scala.Option Option]] containing the value of the
-   *         key, or [[None None]] if it is undefined.
+   *         key, or [[scala.None None]] if it is undefined.
    */
   override def remove(key: K): Option[V] = back get key map { v =>
     back -= key; v

@@ -1,13 +1,19 @@
 name                := "util"
 organization        := "me.hawkweisman"
 scalaVersion        := "2.11.7"
-val projectVersion   = "0.0.2" // this is where you would set the current release version
 
+// versioning stuff
+val projectVersion   = "0.0.3" // the current release version
 val gitHeadCommitSha = settingKey[String]("current git commit short SHA")
 
-gitHeadCommitSha in ThisBuild := Process("git rev-parse --short HEAD").lines.head
+gitHeadCommitSha in ThisBuild := Process("git rev-parse --short HEAD")
+  .lines
+  .headOption
+  .getOrElse("")
 
 version in ThisBuild := s"$projectVersion-${gitHeadCommitSha.value}"
+
+autoAPIMappings := true
 
 libraryDependencies ++= Seq(
   "org.scalacheck"  %% "scalacheck" % "1.12.2"  % "test",

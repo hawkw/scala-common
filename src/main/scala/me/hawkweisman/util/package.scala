@@ -6,12 +6,11 @@ import scala.language.{postfixOps, implicitConversions}
 import scala.util.{Try,Success,Failure}
 
 /**
- * Utilities
- * =========
- *
+ * ==Utilities==
  * Miscellaneous robust and composeable implementations of various little
  * utility functions that I find myself using over and over again.
  *
+ * ==Implicit Conversions==
  * This package contains implicit conversions and enriched implicit classes
  * of standard library classes in the `scala.util` package. These mostly deal
  * with exceptions and error handling. These enriched implicit classes include
@@ -21,13 +20,17 @@ import scala.util.{Try,Success,Failure}
  *     [[java.util.Exception]]s, allowing the string  printed by
  *     [[java.util.Exception.printStackTrace Exception.printStackTrace]] to be
  *     accessed programmatically as well as printed to standard error.
+ * {{{
+ * import me.hawkweisman.util.RichException
+ * val e = new Exception("A message")
+ * val s: String = e.stackTraceString
+ * }}}
  *
  *  2. [[TryWithFold]], which adds the [[TryWithFold.fold fold]] method to
  *     [[scala.util.Try]]. This method will be added to the standard library
  *     in Scala 2.12
  *     (see [[https://issues.scala-lang.org/browse/SI-8336 SI-8336]]).
- *
- * @example {{{
+ * {{{
  * import me.hawkweisman.util.TryWithFold
  * val result: Try[Throwable, Int] = Try { string.toInt }
  * log(result.fold(
@@ -36,11 +39,8 @@ import scala.util.{Try,Success,Failure}
  * ))
  * }}}
  *
- * @example {{{
- * import me.hawkweisman.util.RichException
- * val e = new Exception("A message")
- * val s: String = e.stackTraceString
- * }}}
+ *
+ * @example
  *
  * @author Hawk Weisman
  * @since v0.0.3
@@ -59,6 +59,8 @@ package object util {
    * @see [[https://issues.scala-lang.org/browse/SI-8336 SI-8336]]
    * @since v0.0.3
    * @author Hawk Weisman
+   *
+   * }}}
    */
   implicit class TryWithFold[T](val t: Try[T]) {
     /**
@@ -100,7 +102,11 @@ package object util {
    *
    * @since v0.0.3
    * @author Hawk Weisman
-   *
+   * @example {{{
+   * import me.hawkweisman.util.RichException
+   * val e = new Exception("A message")
+   * val s: String = e.stackTraceString
+   * }}}
    * Created by hawk on 6/22/15.
    */
   implicit class RichException(val e: Throwable) {

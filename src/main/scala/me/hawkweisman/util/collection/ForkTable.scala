@@ -5,7 +5,7 @@ import scala.annotation.tailrec
 import scala.collection.{DefaultMap, AbstractMap}
 
 trait ForkTable[K,V]
-  extends AbstractMap[K,V]
+extends AbstractMap[K,V]
   with DefaultMap[K,V] {
 
   type SelfType <: ForkTable[K,V]

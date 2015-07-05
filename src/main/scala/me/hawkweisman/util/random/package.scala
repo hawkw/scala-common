@@ -3,8 +3,7 @@ package me.hawkweisman.util
 import scala.util.Random
 
 /**
- * Random
- * ======
+ * ==Random==
  *
  * Utility methods for generating random data. These can be used in testing,
  * for generating values for cryptographic purposes, or for probabilistic
