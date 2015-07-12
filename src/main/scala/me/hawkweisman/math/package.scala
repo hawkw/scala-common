@@ -47,19 +47,19 @@ package object math {
     findKNearest(k, xs, Set())
   }
 
-  def kNearest(k: Int, target: Double, xs: Set[Double]): Set[Double] =
-    kNearest[Double,Double](k, xs)((it: Double) => abs(it - target))
+  /**
+   * Distance function for two `A`s such that `A : `[[Numeric]].
+   * @param  a the first of the two numbers to compare
+   * @param  b the second of the two numbers to compare
+   * @return the distance between `a` and `b` as a positive number
+   */
+  def numericDistance[A : Numeric](a: A, b: A): A
+    = implicitly[Numeric[A]].abs(implicitly[Numeric[A]].minus(a, b))
 
-  def kNearest(k: Int, target: Int, xs: Set[Int]): Set[Int] =
-    kNearest[Int,Int](k, xs)((it: Int) => abs(it - target))
+  def kNearest[A : Numeric](k: Int, target: A, xs: Set[A]): Set[A]
+    = kNearest[A,A](k,xs)((it: A) => numericDistance(it, target))
 
-  def kNearest(k: Int, target: Float, xs: Set[Float]): Set[Float] =
-    kNearest[Float,Float](k, xs)((it: Float) => abs(it - target))
-
-  def kNearest(k: Int, target: Long, xs: Set[Long]): Set[Long] =
-    kNearest[Long,Long](k, xs)((it: Long) => abs(it - target))
-
-  def normalizeAt[T : Fractional](at: T)(xs: Seq[T]): Seq[T] = {
+  def normalizeAt[A : Fractional](at: A)(xs: Seq[A]): Seq[A] = {
     val sigma = (xs sum ) * at
     xs map ( x => x / sigma )
   }
