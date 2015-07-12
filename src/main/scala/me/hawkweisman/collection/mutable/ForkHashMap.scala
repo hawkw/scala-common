@@ -1,7 +1,7 @@
 package me.hawkweisman
 package collection.mutable
 
-import me.hawkweisman.util.collection.ForkTable
+import me.hawkweisman.collection.ForkTable
 
 import scala.annotation.tailrec
 import scala.collection.mutable
