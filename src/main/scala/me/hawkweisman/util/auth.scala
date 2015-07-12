@@ -75,7 +75,7 @@ object auth {
   def hash(
    pass: String,
    algorithm: String = "SHA-512",
-   salt: String = random.randomAlphanumericString(defaultHashLength)(new scala.util.Random)
+   salt: String = random.randomAlphanumericString(defaultHashLength)
    ): (String,String) = {
     val hasher = MessageDigest.getInstance(algorithm)
     hasher update ( pass getBytes )

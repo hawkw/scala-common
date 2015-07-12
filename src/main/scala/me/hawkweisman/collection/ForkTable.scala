@@ -51,7 +51,7 @@ extends AbstractMap[K,V]
   /**
    * @return a sequence of this level's child ForkTables.
    */
-  def getChildren: Seq[ForkTable[K,V]] = _children
+  def children: Seq[ForkTable[K,V]] = _children
 
   protected def removeChild(other: SelfType): SelfType
 
