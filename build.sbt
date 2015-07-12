@@ -3,7 +3,7 @@ import bintray.Keys._
 
 name          := "util"
 organization  := "me.hawkweisman"
-version       := "0.1.0" // the current release version
+version       := "0.1.1" // the current release version
 scalaVersion  := "2.11.7"
 
 sbtPlugin     := false // if we don't set this, Bintray will think
