@@ -113,7 +113,8 @@ package object random {
         val remainingWeight: Double = rest
           .map{ case ((weight, _)) => weight }
           .sum
-        require(remainingWeight + max._1 == 1.0,
+        val (maxWeight, _) = max
+        require(remainingWeight + maxWeight == 1.0,
           "The sum of each weight must equal 1.0")
         val choiceRest = rest map { case ((weight, f)) => (weight / 1.0, f) }
         weightedPick2(max,
