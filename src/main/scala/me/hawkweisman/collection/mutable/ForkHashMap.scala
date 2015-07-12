@@ -11,13 +11,13 @@ import scala.collection
  * Created by hawk on 6/29/15.
  */
 class ForkHashMap[K,V](
-  protected var parent: Option[ForkHashMap[K,V]] = None,
-  protected var children: Seq[ForkHashMap[K,V]] = Seq()
+  protected var _parent: Option[ForkHashMap[K,V]] = None,
+  protected var _children: Seq[ForkHashMap[K,V]] = Seq()
   ) extends ForkTable[K,V] {
 
   override type SelfType = ForkHashMap[K,V]
-  protected var back: Map[K,V] = Map()
-  protected var whiteouts: Set[K] = Set()
+  protected[this] var back: Map[K,V] = Map()
+  protected[this] var whiteouts: Set[K] = Set()
 
   /**
    * Change the parent corresponding to this scope.
@@ -25,16 +25,16 @@ class ForkHashMap[K,V](
    * @throws IllegalArgumentException if the specified parent was invalid
    */
   override def reparent(nParent: SelfType): SelfType = {
-    require(nParent != this, "Scope cannot mount itSelfType as parent!")
-    parent foreach ( _ removeChild this )
+    require(nParent != this, "Scope cannot mount itself as parent!")
+    _parent foreach ( _ removeChild this )
     nParent addChild this
-    parent = Some(nParent)
+    _parent = Some(nParent)
     this
   }
 
   override def freeze(): SelfType = {
     parent foreach { oldParent =>
-      this.parent = None
+      _parent = None
       this.back ++= oldParent.iterator withFilter {
         case((key,_)) => !back.contains(key) && !whiteouts.contains(key)
       }
@@ -52,18 +52,16 @@ class ForkHashMap[K,V](
    * @return a new child of this scope
    */
   override def fork(): SelfType = {
-    val c = new SelfType(parent = Some(this))
-    children = children :+ c
+    val c = new SelfType(_parent = Some(this))
+    _children = _children :+ c
     c
   }
 
-  override protected def addChild(other: SelfType): SelfType = {
-    children = children :+ other; this
-  }
+  override protected def addChild(other: SelfType): SelfType
+    = { _children = _children :+ other; this }
 
-  override protected def removeChild(other: SelfType): SelfType = {
-    this.children = children.filter({other != _}); this
-  }
+  override protected def removeChild(other: SelfType): SelfType
+    = { _children = _children.filter({other != _}); this }
 
   /**
    * Inserts a key-value pair from the map.
@@ -106,14 +104,14 @@ class ForkHashMap[K,V](
   override def remove(key: K): Option[V] = back get key map { v =>
     back -= key; v
   } orElse {
-    parent flatMap { _ get key } map { v => whiteouts += key; v }
+    _parent flatMap { _ get key } map { v => whiteouts += key; v }
   }
 
  @tailrec override final def chainContains(key: K): Boolean =
    back contains key match {
     case true                            => true
     case false if whiteouts contains key => false
-    case false                           => parent match {
+    case false                           => _parent match {
       case None        => false
       case Some(thing) => thing.chainContains(key)
     }
@@ -121,7 +119,7 @@ class ForkHashMap[K,V](
   @tailrec override final def chainExists(p: ((K, V)) => Boolean): Boolean =
     back exists p match {
       case true  => true // this method could look much simpler were it not for `tailrec`
-      case false => parent match {
+      case false => _parent match {
         case None        => false
         case Some(thing) => thing.chainExists(p)
       }

@@ -10,10 +10,10 @@ extends AbstractMap[K,V]
 
   type SelfType <: ForkTable[K,V]
 
-  protected def parent: Option[SelfType]
-  protected def children: Seq[SelfType]
-  protected def whiteouts: Set[K]
-  protected def back: Map[K,V]
+  protected def _parent: Option[SelfType]
+  protected[this] def _children: Seq[SelfType]
+  protected[this] def whiteouts: Set[K]
+  protected[this] def back: Map[K,V]
 
   /**
    * Inserts a key-value pair from the map.
@@ -36,22 +36,22 @@ extends AbstractMap[K,V]
   /**
    * @return true if this is the root-level, false if it is not
    */
-  def root: Boolean = parent.isEmpty
+  def root: Boolean = _parent.isEmpty
   /**
    * @return true if this is a bottom-level leaf, false if it is not
    */
-  def leaf: Boolean = parent.isDefined && children.isEmpty
+  def leaf: Boolean = _parent.isDefined && _children.isEmpty
   /**
    * @return an [[scala.Option Option]] containing a reference to
    *         the parent table, or [[scala.None None]] if this is
    *         the root level of the tree
    */
-  def getParent: Option[SelfType] = parent
+  def parent: Option[SelfType] = _parent
 
   /**
    * @return a sequence of this level's child ForkTables.
    */
-  def getChildren: Seq[ForkTable[K,V]] = children
+  def getChildren: Seq[ForkTable[K,V]] = _children
 
   protected def removeChild(other: SelfType): SelfType
 
@@ -60,7 +60,7 @@ extends AbstractMap[K,V]
   /**
    * @return the number of keys defined in this level plus all previous levels
    */
-  def chainSize: Int = size + (parent map (_.chainSize) getOrElse 0)
+  def chainSize: Int = size + (_parent map (_.chainSize) getOrElse 0)
 
   /**
    * Change the parent corresponding to this scope.
@@ -164,7 +164,7 @@ extends AbstractMap[K,V]
    * @param indentLevel the level to indent to
    * @return a String representing this table indented at the specified level
    */
-  def prettyPrint(indentLevel: Int): String = (" "*indentLevel) + this.keys.foldLeft(""){
+  def prettyPrint(indentLevel: Int): String = (" " * indentLevel) + this.keys.foldLeft(""){
     (acc, key) =>
       acc + "\n" + (" " * indentLevel) + s"$key ==> ${this.get(key).getOrElse("")}"
   }
