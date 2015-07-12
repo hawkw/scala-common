@@ -1,4 +1,4 @@
-package me.hawkweisman.util
+package me.hawkweisman.math
 package tests
 
 import org.scalatest.{Matchers, FlatSpec}
@@ -10,7 +10,7 @@ class MathSpec extends FlatSpec
 
   "The normalizeAt() function" should "normalize any set of Doubles to 1" in {
     forAll { (ns: Seq[Double]) => whenever (ns.length > 1) {
-      math.normalizeAt(1.0)(ns).sum should be (1.0 +- 1e-5)
+      normalizeAt(1.0)(ns).sum should be (1.0 +- 1e-5)
       }
     }
   }/*
@@ -22,7 +22,7 @@ class MathSpec extends FlatSpec
   }*/
   it should "normalize any set of Floats at 1" in {
     forAll { (ns: Seq[Double]) => whenever(ns.length > 1) {
-      math.normalizeAt(1.0)(ns).sum should be (1.0 +- 1e-5)
+      normalizeAt(1.0)(ns).sum should be (1.0 +- 1e-5)
       }
     }
   }/*

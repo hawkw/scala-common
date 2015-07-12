@@ -1,7 +1,6 @@
-package me.hawkweisman.util
+package me.hawkweisman.collection
 package tests
 
-import collection.RepeatableSeq
 import org.scalatest.{FlatSpec, Matchers}
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
 
