@@ -1,4 +1,4 @@
-// package me.hawkweisman.util
+// package me.hawkweisman
 // package collection
 //
 // import scala.collection.AbstractIterator

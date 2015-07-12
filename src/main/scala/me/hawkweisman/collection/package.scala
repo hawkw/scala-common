@@ -1,4 +1,4 @@
-package me.hawkweisman.util
+package me.hawkweisman
 /**
  * ==Collection==
  * Contains various utilities for working on collections and implementations

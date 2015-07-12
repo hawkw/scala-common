@@ -1,4 +1,4 @@
-package me.hawkweisman.util
+package me.hawkweisman
 
 import scala.concurrent.{Promise, Future}
 import scala.util.{Try,Success,Failure}
