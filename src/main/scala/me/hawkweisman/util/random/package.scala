@@ -81,10 +81,11 @@ package object random {
       require(aWeight > 0, "Weight for a must be greater than zero.")
       require(bWeight > 0, "Weight for b must be greater than zero.")
       val choices = Seq(a,b) sortWith { case ((x,_), (y,_)) => x > y }
+      val (firstWeight, firstResult) = choices(0)
+      val (_, secondResult)          = choices(1)
       random.nextDouble() match {
-        case i: Double
-          if i <= choices(0)._1 => choices(0)._2()
-        case _                  => choices(1)._2()
+        case i: Double if i <= firstWeight  => firstResult()
+        case _                              => secondResult()
         // TODO: consider just making this return the chosen function
         // so that it can be evaluated at the call site?
       }
