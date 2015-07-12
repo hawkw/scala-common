@@ -2,6 +2,7 @@ package me.hawkweisman
 
 import scala.annotation.tailrec
 import scala.math.abs
+import scala.math.Fractional.Implicits._
 
 /**
  * Miscellaneous mathematical and statistical functionality.
@@ -34,7 +35,7 @@ package object math {
    * @tparam B the type of the distance result
    * @return a set containing the nearest _k_ values
    */
-  def kNearest[A,B <% Ordered[B]](k: Int, xs: Set[A])(dist: (A) => B): Set[A] = {
+  def kNearest[A,B : Ordering](k: Int, xs: Set[A])(dist: (A) => B): Set[A] = {
     require(k > 0, "Values of k must be greater than zero")
     @tailrec def findKNearest(k: Int, xs: Set[A], neighbors: Set[A]): Set[A] = {
       val nearest = xs minBy dist
@@ -58,9 +59,8 @@ package object math {
   def kNearest(k: Int, target: Long, xs: Set[Long]): Set[Long] =
     kNearest[Long,Long](k, xs)((it: Long) => abs(it - target))
 
-  def normalizeAt[T](at: T)(xs: Seq[T])(implicit num: Fractional[T]): Seq[T] = {
-    import num.mkNumericOps
-    val sigma  = (xs sum ) * at
+  def normalizeAt[T : Fractional](at: T)(xs: Seq[T]): Seq[T] = {
+    val sigma = (xs sum ) * at
     xs map ( x => x / sigma )
   }
 
