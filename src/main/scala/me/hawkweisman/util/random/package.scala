@@ -17,14 +17,14 @@ package object random {
    * @param random an instance of [[scala.util.Random]]
    * @return a [[String]] of length _n_
    */
-  def randomString(alphabet: String)(n: Int)(random: Random): String = {
-    require(n > 0, "Desired length must be positive")
-    require(alphabet != "", "Alphabet must contain characters")
-    Stream.continually(random.nextInt(alphabet.length))
-      .map(alphabet)
-      .take(n)
-      .mkString
-  }
+  def randomString(alphabet: String)(n: Int)(random: Random): String
+    = { require(n > 0, "Desired length must be positive")
+        require(alphabet != "", "Alphabet must contain characters")
+        Stream.continually(random.nextInt(alphabet.length))
+              .map(alphabet)
+              .take(n)
+              .mkString
+      }
 
   /**
    * Generates a random [[String]] of length _n_ consisting of lowercase
@@ -39,8 +39,8 @@ package object random {
    * @param random an instance of [[scala.util.Random]]
    * @return a [[String]] of length _n_
    */
-  def randomAlphanumericString(n: Int)(random: Random): String =
-    randomString("abcdefghijklmnopqrstuvwxyz0123456789")(n)(random)
+  def randomAlphanumericString(n: Int)(random: Random): String
+    = randomString("abcdefghijklmnopqrstuvwxyz0123456789")(n)(random)
 
   /**
    * Generates a random [[String]] that is a valid Java identifier
@@ -48,16 +48,16 @@ package object random {
    * @param random an instance of [[scala.util.Random]]
    * @return a [[String]] of length _n_
    */
-  def randomJavaIdent(n: Int)(random: Random): String = {
-    val first = randomString(
-      "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_$")(1)(random)
-    val rest = if (n > 1) {
-      randomString(
-        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_$12345667890"
-      )(n - 1)(random)
-    } else { "" }
-    s"$first$rest"
-  }
+  def randomJavaIdent(n: Int)(random: Random): String
+    = { val first = randomString(
+          "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_$")(1)(random)
+        val rest = if (n > 1) {
+          randomString(
+            "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_$12345667890"
+          )(n - 1)(random)
+        } else { "" }
+        s"$first$rest"
+      }
 
   /**
    * Chooses one of two weighted random options.
@@ -73,23 +73,24 @@ package object random {
    * @param  random an instance of [[scala.util.Random]]
    * @return the result of evaluating either `a` or `b`
    */
-  def weightedPick2[T](a: (Double, () => T), b: (Double, () => T))
-                      (random: Random): T = (a, b) match {
-    case ((aWeight,aFunc), (bWeight, bFunc)) =>
-      require(aWeight + bWeight == 1.0,
-        "The sum of the weights for a and b must equal 1.0")
-      require(aWeight > 0, "Weight for a must be greater than zero.")
-      require(bWeight > 0, "Weight for b must be greater than zero.")
-      val choices = Seq(a,b) sortWith { case ((x,_), (y,_)) => x > y }
-      val (firstWeight, firstResult) = choices(0)
-      val (_, secondResult)          = choices(1)
-      random.nextDouble() match {
-        case i: Double if i <= firstWeight  => firstResult()
-        case _                              => secondResult()
-        // TODO: consider just making this return the chosen function
-        // so that it can be evaluated at the call site?
-      }
-  }
+  def weightedPick2[T](a: (Double, () ⇒ T), b: (Double, () ⇒ T))
+                      (random: Random): T
+    = (a, b) match {
+      case ((aWeight,aFunc), (bWeight, bFunc)) ⇒
+        require(aWeight + bWeight == 1.0,
+          "The sum of the weights for a and b must equal 1.0")
+        require(aWeight > 0, "Weight for a must be greater than zero.")
+        require(bWeight > 0, "Weight for b must be greater than zero.")
+        val choices = Seq(a,b) sortWith { case ((x,_), (y,_)) ⇒ x > y }
+        val (firstWeight, firstResult) = choices(0)
+        val (_, secondResult)          = choices(1)
+        random.nextDouble() match {
+          case i: Double if i <= firstWeight  ⇒ firstResult()
+          case _                              ⇒ secondResult()
+          // TODO: consider just making this return the chosen function
+          // so that it can be evaluated at the call site?
+        }
+    }
 
   /**
    * Chooses one of _n_ weighted random options.
@@ -104,25 +105,24 @@ package object random {
    * @param  random an instance of [[scala.util.Random]]
    * @return the result of evaluating the chosen generator
    */
-  def weightedPickN[T](choices: List[(Double, () => T)])(random: Random): T = {
-    require(choices.length >= 2,
-      "Two or more choices must be provided.")
-    choices.sortWith { case ((x,_), (y,_)) => x > y } match {
-      case max :: min :: Nil => weightedPick2(max,min)(random)
-      case max :: rest =>
-        val remainingWeight: Double = rest
-          .map{ case ((weight, _)) => weight }
-          .sum
-        val (maxWeight, _) = max
-        require(remainingWeight + maxWeight == 1.0,
-          "The sum of each weight must equal 1.0")
-        val choiceRest = rest map { case ((weight, f)) => (weight / 1.0, f) }
-        weightedPick2(max,
-          (remainingWeight, () => { weightedPickN(choiceRest)(random) })
-        )(random)
-      case Nil =>
-        throw new IllegalArgumentException("cannot pick from empty list")
-    }
-  }
+  def weightedPickN[T](choices: List[(Double, () ⇒ T)])(random: Random): T
+    = { require(choices.length >= 2, "Two or more choices must be provided.")
+        choices.sortWith { case ((x,_), (y,_)) => x > y } match {
+          case max :: min :: Nil ⇒  weightedPick2(max,min)(random)
+          case max :: rest ⇒
+            val remainingWeight: Double
+              = rest.map { case ((weight, _)) ⇒ weight }
+                    .sum
+            val (maxWeight, _) = max
+            require(remainingWeight + maxWeight == 1.0,
+              "The sum of each weight must equal 1.0")
+            val choiceRest = rest map { case ((weight, f)) ⇒ (weight / 1.0, f) }
+            weightedPick2(max,
+              (remainingWeight, () ⇒ { weightedPickN(choiceRest)(random) })
+            )(random)
+          case Nil ⇒
+            throw new IllegalArgumentException("cannot pick from empty list")
+        }
+      }
 
 }

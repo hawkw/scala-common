@@ -42,7 +42,8 @@ package object collection {
      *  }}}
      */
     def repeat: Stream[A]
-      = Stream.continually(self).flatten
+      = Stream.continually(self)
+              .flatten
   }
 
 }

@@ -36,22 +36,26 @@ extends AbstractMap[K,V]
   /**
    * @return true if this is the root-level, false if it is not
    */
-  def root: Boolean = _parent.isEmpty
+  def root: Boolean
+    = _parent.isEmpty
   /**
    * @return true if this is a bottom-level leaf, false if it is not
    */
-  def leaf: Boolean = _parent.isDefined && _children.isEmpty
+  def leaf: Boolean
+    = _parent.isDefined && _children.isEmpty
   /**
    * @return an [[scala.Option Option]] containing a reference to
    *         the parent table, or [[scala.None None]] if this is
    *         the root level of the tree
    */
-  def parent: Option[SelfType] = _parent
+  def parent: Option[SelfType]
+    = _parent
 
   /**
    * @return a sequence of this level's child ForkTables.
    */
-  def children: Seq[ForkTable[K,V]] = _children
+  def children: Seq[ForkTable[K,V]]
+    = _children
 
   protected def removeChild(other: SelfType): SelfType
 
@@ -60,7 +64,8 @@ extends AbstractMap[K,V]
   /**
    * @return the number of keys defined in this level plus all previous levels
    */
-  def chainSize: Int = size + (_parent map (_.chainSize) getOrElse 0)
+  def chainSize: Int
+    = size + (_parent map (_.chainSize) getOrElse 0)
 
   /**
    * Change the parent corresponding to this scope.
@@ -91,16 +96,18 @@ extends AbstractMap[K,V]
 
   /** @return the number of entries in this level over the table.
    */
-  override def size: Int = back.size
+  override def size: Int
+    = back.size
 
   /** @return an Iterator over all of the (key, value) pairs in the tree.
     */
-  override def iterator: Iterator[(K,V)] = parent match {
-    case None         => back.iterator // TODO: make tail-recursive?
-    case Some(parent) => back.iterator ++ parent.iterator.withFilter({
-      case ((key,_))  => !back.contains(key) && !whiteouts.contains(key)
-    })
-  }
+  override def iterator: Iterator[(K,V)]
+    = parent match {
+      case None         ⇒ back.iterator // TODO: make tail-recursive?
+      case Some(parent) ⇒ back.iterator ++ parent.iterator.withFilter({
+        case ((key,_))  ⇒ !back.contains(key) && !whiteouts.contains(key)
+      })
+    }
 
   /**
    * Returns true if this contains the selected key OR if any of its' parents
@@ -114,7 +121,8 @@ extends AbstractMap[K,V]
    * @param  key the key to look up
    * @return true if this level contains a binding for the given key, false otherwise
    */
-  override def contains(key: K): Boolean = back contains key
+  override def contains(key: K): Boolean
+    = back contains key
 
   /**
    * Search this level for a (key, value) pair matching a predicate.
@@ -123,7 +131,8 @@ extends AbstractMap[K,V]
    * @return true if there exists a pair defined at this level for
    *         which the predicate holds, false otherwise.
    */
-  override def exists(p: ((K, V)) => Boolean): Boolean = back exists p
+  override def exists(p: ((K, V)) ⇒ Boolean): Boolean
+    = back exists p
 
   /**
    * Search the whole chain down from this level
@@ -133,14 +142,15 @@ extends AbstractMap[K,V]
    * @return true if there exists a pair for which the
    *         predicate holds, false otherwise.
    */
- def chainExists(p: ((K, V)) => Boolean): Boolean
+ def chainExists(p: ((K, V)) ⇒ Boolean): Boolean
 
   /**
    * Look up the given key
    * @param  key the key to look up
    * @return the value bound to that key.
    */
-  override def apply(key: K): V = back(key)
+  override def apply(key: K): V
+    = back(key)
 
   /**
    * Forks this table, returning a new `ForkTable[K,V]`.
@@ -156,7 +166,8 @@ extends AbstractMap[K,V]
  /**
   * @return a String representation of this ForkTable
   */
-  override def toString(): String = this.prettyPrint(0)
+  override def toString(): String
+  = this.prettyPrint(0)
 
   /**
    * Helper method for printing indented levels of a ForkTable
@@ -165,7 +176,7 @@ extends AbstractMap[K,V]
    * @return a String representing this table indented at the specified level
    */
   def prettyPrint(indentLevel: Int): String = (" " * indentLevel) + this.keys.foldLeft(""){
-    (acc, key) =>
+    (acc, key) ⇒
       acc + "\n" + (" " * indentLevel) + s"$key ==> ${this.get(key).getOrElse("")}"
   }
 }

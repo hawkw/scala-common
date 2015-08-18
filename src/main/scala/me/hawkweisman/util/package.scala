@@ -17,8 +17,8 @@ import scala.util.{Try,Success,Failure}
  * the following:
  *
  *  1. [[RichException]], which adds a `stackTraceString` value to
- *     [[java.util.Exception]]s, allowing the string  printed by
- *     [[java.util.Exception.printStackTrace Exception.printStackTrace]] to be
+ *     [[java.lang.Exception]]s, allowing the string  printed by
+ *     [[java.lang.Exception#printStackTrace Exception.printStackTrace]] to be
  *     accessed programmatically as well as printed to standard error.
  * {{{
  * import me.hawkweisman.util.RichException
@@ -26,7 +26,8 @@ import scala.util.{Try,Success,Failure}
  * val s: String = e.stackTraceString
  * }}}
  *
- *  2. [[TryWithFold]], which adds the [[TryWithFold.fold fold]] method to
+ *  2. [[me.hawkweisman.util.TryWithFold]], which adds the
+ *     [[me.hawkweisman.util.TryWithFold.fold fold]] method to
  *     [[scala.util.Try]]. This method will be added to the standard library
  *     in Scala 2.12
  *     (see [[https://issues.scala-lang.org/browse/SI-8336 SI-8336]]).
@@ -89,10 +90,10 @@ package object util {
      * @param fb the function to apply if this is a `Success`
      * @return the results of applying the function
      */
-    def fold[U](fa: Throwable => U, fb: T => U): U
+    def fold[U](fa: Throwable ⇒ U, fb: T ⇒ U): U
       = t match {
-        case Failure(why: Throwable)  => fa(why)
-        case Success(value)           => fb(value)
+        case Failure(why: Throwable) ⇒ fa(why)
+        case Success(value)          ⇒ fb(value)
       }
   }
 
@@ -110,11 +111,11 @@ package object util {
    * Created by hawk on 6/22/15.
    */
   implicit class RichException(val e: Throwable) {
-    lazy val stackTraceString: String = {
-      val sw = new StringWriter
-      e printStackTrace new PrintWriter(sw)
-      sw toString
-    }
+    lazy val stackTraceString: String
+      = { val sw = new StringWriter
+          e printStackTrace new PrintWriter(sw)
+          sw toString
+        }
   }
 
 }

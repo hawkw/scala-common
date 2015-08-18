@@ -55,6 +55,7 @@ object concurrent {
    *  }}}
    */
   implicit def tryToFuture[T](t: Try[T]): Future[T]
-    = Promise().complete(t).future
+    = Promise().complete(t)
+               .future
 
 }
