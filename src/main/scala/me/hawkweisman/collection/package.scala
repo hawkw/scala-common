@@ -79,11 +79,11 @@ package object collection {
      */
     def mapAccumLeft[B, C](z: B)(op: (B, A) ⇒ (B, C)): (B, Seq[C])
       = self match {
-          case Seq() ⇒ (z, Seq[C]())
-          case Seq(x, xs@_*) ⇒
+          case Seq(x, xs @ _*) ⇒
             val (z_prime, y) = op(z, x)
             val (z_prime_prime, ys) = xs.mapAccumLeft(z_prime)(op)
             (z_prime_prime, y +: ys)
+          case _ ⇒ (z, Seq[C]())
         }
 
     /**
