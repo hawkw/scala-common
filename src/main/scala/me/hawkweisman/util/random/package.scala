@@ -95,28 +95,32 @@ package object random {
   /**
    * Chooses one of _n_ weighted random options.
    *
-   * The choicees are represented as a list of tuples containing a weight
+   * The choicees are represented as a sequence of tuples containing a weight
    * (a double-precision number between 0.0 and 1.0) and a function
    * `() => T`. These functions will not be evaluated unless chosen, allowing
    * computationally expensive choices to be generated only when needed.
    *
-   * @param  choices `List[(Double, () => T)]` a list of (weight, result)
+   * @param  choices `Seq[(Double, () => T)]` a list of (weight, result)
    *                 choices from which to select
    * @param  random an instance of [[scala.util.Random]]
    * @return the result of evaluating the chosen generator
    */
-  def weightedPickN[T](choices: List[(Double, () ⇒ T)])(random: Random): T
+  def weightedPickN[T](choices: Seq[(Double, () ⇒ T)])(random: Random): T
     = { require(choices.length >= 2, "Two or more choices must be provided.")
-        choices.sortWith { case ((x,_), (y,_)) => x > y } match {
-          case max :: min :: Nil ⇒  weightedPick2(max,min)(random)
-          case max :: rest ⇒
+        choices sortWith {
+          case ((x,_), (y,_)) => x > y
+        } match {
+          case Seq(max, min) ⇒ weightedPick2(max,min)(random)
+          case Seq(max, rest @ _*) ⇒
             val remainingWeight: Double
               = rest.map { case ((weight, _)) ⇒ weight }
                     .sum
             val (maxWeight, _) = max
             require(remainingWeight + maxWeight == 1.0,
               "The sum of each weight must equal 1.0")
-            val choiceRest = rest map { case ((weight, f)) ⇒ (weight / 1.0, f) }
+            val choiceRest = rest map {
+              case ((weight, f)) ⇒ (weight / 1.0, f)
+            }
             weightedPick2(max,
               (remainingWeight, () ⇒ { weightedPickN(choiceRest)(random) })
             )(random)
