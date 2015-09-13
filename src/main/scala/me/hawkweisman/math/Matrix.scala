@@ -1,8 +1,10 @@
 package me.hawkweisman.math
 
 import Matrix.{ map2
-              , TwoD
               }
+
+import scala.reflect.ClassTag
+
 /**
  * A generic arbitrary-sized matrix implementation, backed by
  * a multidimensional array.
@@ -14,7 +16,8 @@ import Matrix.{ map2
  *
  * Created by hawk on 9/13/15.
  */
-class Matrix[N: Numeric](private val m: TwoD[N]) {
+class Matrix[N: Numeric](protected val m: Array[Array[N]])
+                        (implicit ev1: ClassTag[N]){
 
   lazy val columns: Int = m length
   lazy val rows: Int = m(0) length
@@ -24,7 +27,7 @@ class Matrix[N: Numeric](private val m: TwoD[N]) {
 
   @inline private[this] def zipMap(that: Matrix[N])(f: (N, N) ⇒ N): Matrix[N]
     = new Matrix[N]( this.m zip that.m map {
-        case ((r1, r2)) ⇒ r1 zip r2 map { Function tupled f }
+        case ((r1: Array[N], r2: Array[N])) ⇒ r1 zip r2 map { Function tupled f }
       })
 
   def plus (that: Matrix[N]): Matrix[N]
@@ -60,8 +63,7 @@ class Matrix[N: Numeric](private val m: TwoD[N]) {
 }
 
 object Matrix {
-  type TwoD[T] = Array[Array[T]]
-
-  @inline protected def map2[A, B](a: TwoD[A])(f: A ⇒ B): TwoD[B]
+  @inline protected def map2[A, B](a: Array[Array[A]])(f: A ⇒ B)
+                                  (implicit ev1: ClassTag[B]): Array[Array[B]]
     = a map (_ map f)
 }
