@@ -58,8 +58,8 @@ object auth {
 
   val defaultHashLength = 16
 
-  private[this] def mkSalt() =
-    random.randomAlphanumericString(defaultHashLength)(new scala.util.Random)
+  private[this] def mkSalt()
+   = random.randomAlphanumericString(defaultHashLength)(new scala.util.Random)
 
   /**
    * General-purpose password hashing method.
@@ -75,8 +75,9 @@ object auth {
    * @return A tuple containing (hash, salt) as strings
    */
   @throws[NoSuchAlgorithmException]("if the specified hashing algorithm doesn't exist")
-  def hash(pass: String, algorithm: String = "SHA-512",
-           salt: String = mkSalt): (String,String)
+  def hash( pass: String
+          , algorithm: String = "SHA-512"
+          , salt: String = mkSalt): (String,String)
     = { val hasher = MessageDigest.getInstance(algorithm)
         hasher update ( pass getBytes )
         hasher update ( salt getBytes )

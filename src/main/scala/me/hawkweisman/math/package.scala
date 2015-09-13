@@ -37,7 +37,7 @@ package object math {
    * @tparam B the type of the distance result
    * @return a set containing the nearest _k_ values
    */
-  def kNearest[A,B : Ordering](k: Int, xs: Set[A])(dist: (A) ⇒ B): Set[A]
+  def kNearest[A, B: Ordering](k: Int, xs: Set[A])(dist: (A) ⇒ B): Set[A]
     = { require(k > 0, "Values of k must be greater than zero")
         @tailrec def findKNearest(k: Int, xs: Set[A], neighbors: Set[A]): Set[A]
           = { val nearest = xs minBy dist
@@ -55,13 +55,13 @@ package object math {
    * @param  b the second of the two numbers to compare
    * @return the distance between `a` and `b` as a positive number
    */
-  def numericDistance[A : Numeric](a: A, b: A): A
+  def numericDistance[A: Numeric](a: A, b: A): A
     = implicitly[Numeric[A]].abs(implicitly[Numeric[A]].minus(a, b))
 
-  def kNearest[A : Numeric](k: Int, target: A, xs: Set[A]): Set[A]
+  def kNearest[A: Numeric](k: Int, target: A, xs: Set[A]): Set[A]
     = kNearest[A,A](k,xs)((it: A) ⇒ numericDistance(it, target))
 
-  def normalizeAt[A : Fractional](at: A)(xs: Seq[A]): Seq[A]
+  def normalizeAt[A: Fractional](at: A)(xs: Seq[A]): Seq[A]
     = { val sigma = (xs sum ) * at
         xs map ( x ⇒  x / sigma )
       }

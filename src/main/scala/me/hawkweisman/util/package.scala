@@ -1,9 +1,16 @@
 package me.hawkweisman
 
-import java.io.{PrintWriter, StringWriter}
+import java.io.{ PrintWriter
+               , StringWriter
+               }
 
-import scala.language.{postfixOps, implicitConversions}
-import scala.util.{Try,Success,Failure}
+import scala.language.{ postfixOps
+                      , implicitConversions
+                      }
+import scala.util.{ Try
+                  , Success
+                  , Failure
+                  }
 
 /**
  * ==Utilities==
