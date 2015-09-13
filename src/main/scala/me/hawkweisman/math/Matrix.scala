@@ -42,10 +42,10 @@ class Matrix[N: Numeric](private val m: TwoD[N]) {
   def times (scalar: N): Matrix[N]
     = new Matrix[N]( map2(m)(implicitly[Numeric[N]].times(_, scalar)) )
 
-  def cross_product (that: N): Matrix[N]
+  def cross_product (that: Matrix[N]): Matrix[N]
     = ???
 
-  def dot_product (that: N): Matrix[N]
+  def dot_product (that: Matrix[N]): Matrix[N]
     = ???
 
   def + (that: Matrix[N]): Matrix[N]
