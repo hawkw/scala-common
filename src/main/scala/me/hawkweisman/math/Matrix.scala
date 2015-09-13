@@ -22,25 +22,21 @@ class Matrix[N: Numeric](private val m: TwoD[N]) {
   @inline def isSameSizeAs(that: Matrix[N]): Boolean
     = this.columns == that.columns && this.rows == that.rows
 
-  @inline private[this] def zipMap(that: Matrix[N])(f: ((N, N)) ⇒ N): Matrix[N]
+  @inline private[this] def zipMap(that: Matrix[N])(f: (N, N) ⇒ N): Matrix[N]
     = new Matrix[N]( this.m zip that.m map {
-        case ((r1, r2)) ⇒ r1 zip r2 map { f }
+        case ((r1, r2)) ⇒ r1 zip r2 map { Function tupled f }
       })
 
   def plus (that: Matrix[N]): Matrix[N]
     = { require(this isSameSizeAs that,
                 "Cannot add matrices of unequal size")
-        zipMap(that)({ case ((a: N, b: N)) ⇒
-          implicitly[Numeric[N]].plus(a,b)
-        })
+        zipMap(that)( (a: N, b: N) ⇒ implicitly[Numeric[N]].plus(a,b) )
       }
 
   def minus (that: Matrix[N]): Matrix[N]
     = { require(this isSameSizeAs that,
               "Cannot subtract matrices of unequal size")
-        zipMap(that)({ case ((a: N, b: N)) ⇒
-          implicitly[Numeric[N]].minus(a,b)
-        })
+        zipMap(that)( (a: N, b: N) ⇒ implicitly[Numeric[N]].minus(a,b) )
       }
 
   def times (scalar: N): Matrix[N]
