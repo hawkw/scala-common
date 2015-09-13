@@ -73,15 +73,20 @@ package object random {
    * @param  random an instance of [[scala.util.Random]]
    * @return the result of evaluating either `a` or `b`
    */
-  def weightedPick2[T](a: (Double, () ⇒ T), b: (Double, () ⇒ T))
-                      (random: Random): T
+  def weightedPick2[T]( a: (Double, () ⇒ T)
+                      , b: (Double, () ⇒ T))
+                      ( implicit random: Random): T
     = (a, b) match {
       case ((aWeight,aFunc), (bWeight, bFunc)) ⇒
         require(aWeight + bWeight == 1.0,
           "The sum of the weights for a and b must equal 1.0")
-        require(aWeight > 0, "Weight for a must be greater than zero.")
-        require(bWeight > 0, "Weight for b must be greater than zero.")
-        val choices = Seq(a,b) sortWith { case ((x,_), (y,_)) ⇒ x > y }
+        require(aWeight > 0,
+          "Weight for a must be greater than zero.")
+        require(bWeight > 0,
+          "Weight for b must be greater than zero.")
+        val choices = Seq(a,b) sortWith {
+          case ((x,_), (y,_)) ⇒ x > y
+        }
         val (firstWeight, firstResult) = choices(0)
         val (_, secondResult)          = choices(1)
         random.nextDouble() match {
@@ -105,7 +110,8 @@ package object random {
    * @param  random an instance of [[scala.util.Random]]
    * @return the result of evaluating the chosen generator
    */
-  def weightedPickN[T](choices: Seq[(Double, () ⇒ T)])(random: Random): T
+  def weightedPickN[T](choices: Seq[(Double, () ⇒ T)])
+                      (implicit random: Random): T
     = { require(choices.length >= 2, "Two or more choices must be provided.")
         choices sortWith {
           case ((x,_), (y,_)) => x > y
