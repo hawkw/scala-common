@@ -28,6 +28,14 @@ extends Linear {
 
   val intVector = genVector (arbitrary[Int]) _
 
+  val singleIntMatrix = for { n ← choose(2, MAX_ARRAY_SIZE)
+                              m ← intMatrix(n) }
+                        yield m
+
+  val singleIntVector = for { n ← choose(2, MAX_ARRAY_SIZE)
+                              v ← intVector(n) }
+                        yield v
+
   val sameSize3Matrix = for { n ← choose(2, MAX_ARRAY_SIZE)
                               a ← intMatrix(n)
                               b ← intMatrix(n)

@@ -8,6 +8,7 @@ import org.scalatest.{ WordSpec
                      , Matchers
                      }
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
+import org.scalacheck.Arbitrary._
 
 /**
  * ScalaCheck proofs testing whether linear algebra properties hold on
@@ -148,8 +149,8 @@ extends WordSpec
     }
     "subtracting matrices and scalars" should {
       "provide the same result as an iterative algorithm" in {
-        forAll { (m: Array[Array[Int]], s: Int) ⇒
-          whenever(m.nonEmpty && m(0).nonEmpty) {
+        forAll ((singleIntMatrix, "m"), (arbitrary[Int], "s")) {
+         (m: Matrix[Int], s: Int) ⇒
             var o: Array[Array[Int]] = Array ofDim[Int](m.length, m(0).length)
 
             for {i ← m.indices
@@ -158,14 +159,13 @@ extends WordSpec
               o(i)(j) = m(i)(j) - s
             }
             m ^- s shouldEqual o
-          }
         }
       }
     }
     "adding matrices and scalars" should {
       "provide the same result as an iterative algorithm" in {
-        forAll { (m: Array[Array[Int]], s: Int) ⇒
-          whenever(m.nonEmpty && m(0).nonEmpty) {
+        forAll ((singleIntMatrix, "m"), (arbitrary[Int], "s")) {
+          (m: Matrix[Int], s: Int) ⇒
             var o: Array[Array[Int]] = Array ofDim[Int](m.length, m(0).length)
 
             for {i ← m.indices
@@ -174,14 +174,14 @@ extends WordSpec
               o(i)(j) = m(i)(j) + s
             }
             m ^- s shouldEqual o
-          }
         }
       }
     }
     "multiplying matrices and scalars" should {
       "provide the same result as an iterative algorithm" in {
-        forAll { (m: Array[Array[Int]], s: Int) ⇒
-          whenever(m.nonEmpty && m(0).nonEmpty) {
+
+        forAll ((singleIntMatrix, "m"), (arbitrary[Int], "s")) {
+          (m: Matrix[Int], s: Int) ⇒
             var o: Array[Array[Int]] = Array ofDim[Int](m.length, m(0).length)
 
             for {i ← m.indices
@@ -190,7 +190,6 @@ extends WordSpec
               o(i)(j) = m(i)(j) * s
             }
             m ^* s shouldEqual o
-          }
         }
       }
     }
@@ -222,43 +221,40 @@ extends WordSpec
     }
     "subtracting vectors and scalars" should {
       "provide the same result as an iterative algorithm" in {
-        forAll { (v: Array[Int], s: Int) ⇒
-          whenever(v.nonEmpty) {
+        forAll ((singleIntVector, "v"), (arbitrary[Int], "s")) {
+          (v: Vector[Int], s: Int) ⇒
             var u: Vector[Int] = Array ofDim[Int] v.length
 
             for { i ← u.indices } {
               u(i) = v(i) - s
             }
             v ^- s shouldEqual u
-          }
         }
       }
     }
     "adding vectors and scalars" should {
       "provide the same result as an iterative algorithm" in {
-        forAll { (v: Array[Int], s: Int) ⇒
-          whenever(v.nonEmpty) {
+        forAll ((singleIntVector, "v"), (arbitrary[Int], "s")) {
+          (v: Vector[Int], s: Int) ⇒
             var u: Vector[Int] = Array ofDim[Int] v.length
 
             for { i ← u.indices } {
               u(i) = v(i) + s
             }
             v ^+ s shouldEqual u
-          }
         }
       }
     }
     "multiplying vectors and scalars" should {
       "provide the same result as an iterative algorithm" in {
-        forAll { (v: Array[Int], s: Int) ⇒
-          whenever(v.nonEmpty) {
+        forAll ((singleIntVector, "v"), (arbitrary[Int], "s")) {
+          (v: Vector[Int], s: Int) ⇒
             var u: Vector[Int] = Array ofDim[Int] v.length
 
             for { i ← u.indices } {
               u(i) = v(i) * s
             }
             v ^* s shouldEqual u
-          }
         }
       }
     }
