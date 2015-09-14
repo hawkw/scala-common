@@ -36,33 +36,7 @@ trait Linear {
 
   def crossProduct[N: Numeric: ClassTag](a: Matrix[N], b: Matrix[N]): Matrix[N]
 
-
-  implicit class RightScalarVectorOps[N : Numeric : ClassTag](s: N) {
-
-    def +(v: Vector[N]): Vector[N]
-      = vectorScalarAdd(v, s)
-
-    def -(v: Vector[N]): Vector[N]
-      = vectorScalarSub(v, s)
-
-    def *(v: Vector[N]): Vector[N]
-      = vectorScalarMul(v, s)
-  }
-
-  implicit class RightScalarMatrixOps[N : Numeric : ClassTag](s: N) {
-
-    def +(m: Matrix[N]): Matrix[N]
-      = matrixScalarAdd(m, s)
-
-    def -(m: Matrix[N]): Matrix[N]
-      = matrixScalarSub(m, s)
-
-    def *(m: Matrix[N]): Matrix[N]
-      = matrixScalarMul(m, s)
-  }
-
-  implicit class VectorOps[N : Numeric : ClassTag](v: Vector[N])
-  {
+  implicit class VectorOps[N: Numeric : ClassTag](v: Vector[N]) {
     require(v.length > 0, "Vectors must have 1 or more elements")
 
     def +(that: Vector[N]): Vector[N]
@@ -84,8 +58,29 @@ trait Linear {
       = vectorScalarMul(v, s)
   }
 
-  implicit class MatrixOps[N : Numeric : ClassTag](m: Matrix[N])
-  {
+  implicit class FractionalVectorOps[F: Fractional : ClassTag](v: Vector[F]) {
+    def /(s: F): Vector[F]
+      = vectorScalarDiv(v, s)
+  }
+
+  implicit class RightScalarVectorOps[N : Numeric : ClassTag](s: N) {
+
+    def +(v: Vector[N]): Vector[N]
+    = vectorScalarAdd(v, s)
+
+    def -(v: Vector[N]): Vector[N]
+    = vectorScalarSub(v, s)
+
+    def *(v: Vector[N]): Vector[N]
+    = vectorScalarMul(v, s)
+  }
+
+  implicit class RightFractionalVectorOps[F: Fractional : ClassTag](s: F) {
+    def /(v: Vector[F]): Vector[F]
+      = vectorScalarDiv(v, s)
+  }
+
+  implicit class MatrixOps[N: Numeric : ClassTag](m: Matrix[N]) {
     require(m.length > 0, "Matrices must have 1 or more columns")
     require(m(0).length > 0, "Matrices must have 1 or more rows")
 
@@ -106,6 +101,29 @@ trait Linear {
 
     def *(s: N): Matrix[N]
       = matrixScalarMul(m, s)
+  }
+
+  implicit class FractionalMatrixOps[F: Fractional : ClassTag](m: Matrix[F]) {
+    def /(s: F): Matrix[F]
+      = matrixScalarDiv(m, s)
+  }
+
+
+  implicit class RightScalarMatrixOps[N : Numeric : ClassTag](s: N) {
+
+    def +(m: Matrix[N]): Matrix[N]
+      = matrixScalarAdd(m, s)
+
+    def -(m: Matrix[N]): Matrix[N]
+      = matrixScalarSub(m, s)
+
+    def *(m: Matrix[N]): Matrix[N]
+      = matrixScalarMul(m, s)
+  }
+
+  implicit class RightFractionalMatrixOps[F: Fractional : ClassTag](s: F) {
+    def /(m: Matrix[F]): Matrix[F]
+      = matrixScalarDiv(m, s)
   }
 }
 
