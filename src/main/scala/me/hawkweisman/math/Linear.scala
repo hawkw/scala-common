@@ -4,6 +4,8 @@ import scala.Function._
 import scala.language.postfixOps
 import scala.reflect.ClassTag
 import Numeric.Implicits._
+import Fractional.Implicits._
+
 
 /**
  * A mixin trait providing a linear algebra DSL.
@@ -14,17 +16,25 @@ trait Linear {
   type Vector[N] = Array[N]
   type Matrix[N] = Vector[Vector[N]]
 
-  def vectorAdd[N : Numeric : ClassTag](a: Vector[N], b: Vector[N]): Vector[N]
+  def vectorAdd[N: Numeric: ClassTag](a: Vector[N], b: Vector[N]): Vector[N]
+  def vectorSub[N: Numeric: ClassTag](a: Vector[N], b: Vector[N]): Vector[N]
 
-  def vectorSub[N : Numeric : ClassTag](a: Vector[N], b: Vector[N]): Vector[N]
+  def vectorScalarAdd[N: Numeric: ClassTag](v: Vector[N], s: N): Vector[N]
+  def vectorScalarSub[N: Numeric: ClassTag](v: Vector[N], s: N): Vector[N]
+  def vectorScalarDiv[N: Fractional: ClassTag](v: Vector[N], s: N): Vector[N]
+  def vectorScalarMul[N: Numeric: ClassTag](v: Vector[N], s: N): Vector[N]
 
-  def dotProduct[N : Numeric : ClassTag](a: Vector[N], b: Vector[N]): N
+  def dotProduct[N: Numeric: ClassTag](a: Vector[N], b: Vector[N]): N
 
-  def matrixAdd[N : Numeric : ClassTag](a: Matrix[N], b: Matrix[N]): Matrix[N]
+  def matrixAdd[N: Numeric: ClassTag](a: Matrix[N], b: Matrix[N]): Matrix[N]
+  def matrixSub[N: Numeric: ClassTag](a: Matrix[N], b: Matrix[N]): Matrix[N]
 
-  def matrixSub[N : Numeric : ClassTag](a: Matrix[N], b: Matrix[N]): Matrix[N]
+  def matrixScalarAdd[N: Numeric: ClassTag](m: Matrix[N], s: N): Matrix[N]
+  def matrixScalarSub[N: Numeric: ClassTag](m: Matrix[N], s: N): Matrix[N]
+  def matrixScalarDiv[N: Fractional: ClassTag](m: Matrix[N], s: N): Matrix[N]
+  def matrixScalarMul[N: Numeric: ClassTag](m: Matrix[N], s: N): Matrix[N]
 
-  def crossProduct[N : Numeric : ClassTag](a: Matrix[N], b: Matrix[N]): Matrix[N]
+  def crossProduct[N: Numeric: ClassTag](a: Matrix[N], b: Matrix[N]): Matrix[N]
 
 
   implicit class VectorOps[N : Numeric : ClassTag](v: Vector[N])
@@ -74,12 +84,44 @@ extends Linear {
         a zip b map tupled(_ + _)
       }
 
-  override def vectorSub[N : Numeric : ClassTag]
+  override def vectorSub[N: Numeric: ClassTag]
                         (a: Vector[N], b: Vector[N]): Vector[N]
     = { require( a.length == b.length
                 , "Cannot subtract of vectors of unequal length" )
         a zip b map tupled(_ - _)
       }
+
+  override def vectorScalarAdd[N: Numeric: ClassTag]
+                              (v: Vector[N], s: N): Vector[N]
+    = v map (_ + s)
+
+  override def vectorScalarSub[N: Numeric: ClassTag]
+                              (v: Vector[N], s: N): Vector[N]
+    = v map (_ - s)
+
+  override def vectorScalarMul[N: Numeric: ClassTag]
+                              (v: Vector[N], s: N): Vector[N]
+    = v map (_ * s)
+
+  override def vectorScalarDiv[N: Fractional: ClassTag]
+                              (v: Vector[N], s: N): Vector[N]
+    = v map (_ / s)
+
+  override def matrixScalarAdd[N: Numeric: ClassTag]
+                              (m: Matrix[N], s: N): Matrix[N]
+    = m map (_ map  (_ + s) )
+
+  override def matrixScalarSub[N: Numeric: ClassTag]
+                              (m: Matrix[N], s: N): Matrix[N]
+    = m map (_ map  (_ - s) )
+
+  override def matrixScalarMul[N: Numeric: ClassTag]
+                              (m: Matrix[N], s: N): Matrix[N]
+    = m map (_ map  (_ * s) )
+
+  override def matrixScalarDiv[N: Fractional: ClassTag]
+                              (m: Matrix[N], s: N): Matrix[N]
+    = m map (_ map  (_ / s) )
 
   override def dotProduct[N : Numeric : ClassTag]
                          (a: Vector[N], b: Vector[N]): N
@@ -141,6 +183,39 @@ extends Linear {
               , "Cannot take dot product of vectors of unequal length" )
       a.par zip b.par map tupled (_ * _) sum
     }
+
+
+  override def vectorScalarAdd[N: Numeric: ClassTag]
+                              (v: Vector[N], s: N): Vector[N]
+    = v.par map (_ + s) toArray
+
+  override def vectorScalarSub[N: Numeric: ClassTag]
+                              (v: Vector[N], s: N): Vector[N]
+    = v.par map (_ - s) toArray
+
+  override def vectorScalarMul[N: Numeric: ClassTag]
+                              (v: Vector[N], s: N): Vector[N]
+    = v.par map (_ * s) toArray
+
+  override def vectorScalarDiv[N: Fractional: ClassTag]
+                              (v: Vector[N], s: N): Vector[N]
+    = v.par map (_ / s) toArray
+
+  override def matrixScalarAdd[N: Numeric: ClassTag]
+                              (m: Matrix[N], s: N): Matrix[N]
+    = m.par map (_.par map (_ + s) toArray ) toArray
+
+  override def matrixScalarSub[N: Numeric: ClassTag]
+                              (m: Matrix[N], s: N): Matrix[N]
+    = m.par map (_.par map  (_ - s) toArray ) toArray
+
+  override def matrixScalarMul[N: Numeric: ClassTag]
+  (m: Matrix[N], s: N): Matrix[N]
+    = m.par map (_.par map (_ * s) toArray ) toArray
+
+  override def matrixScalarDiv[N: Fractional: ClassTag]
+                              (m: Matrix[N], s: N): Matrix[N]
+    = m.par map (_.par map  (_ / s) toArray ) toArray
 
   override def matrixAdd[N : Numeric : ClassTag]
                         (a: Matrix[N], b: Matrix[N]): Matrix[N]
