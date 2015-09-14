@@ -25,40 +25,40 @@ extends WordSpec
   s"The $name algebra" when {
     "adding matrices" should {
       "obey the associative property of addition" in {
-        forAll (sameSize3Matrix) { case ((a, b, c)) ⇒
-                (a + b) + c shouldEqual a + (b + c)
+        forAll (sameSize3Matrix) { case ((m, n, o)) ⇒
+                (m + n) + o shouldEqual m + (n + o)
         }
       }
       "obey the commutative property of addition" in {
-        forAll (sameSize2Matrix) { case ((a, b)) ⇒
-                a + b shouldEqual b + a
+        forAll (sameSize2Matrix) { case ((m, n)) ⇒
+                m + n shouldEqual n + m
         }
       }
     }
     "multiplying matrices" should {
       "obey the associative property of multiplication" in {
-        forAll (sameSize2Matrix) { case ((a, b)) ⇒
-                a + b shouldEqual b + a
+        forAll (sameSize2Matrix) { case ((m, n)) ⇒
+                m + n shouldEqual n + m
         }
 
       }
     }
     "adding vectors" should {
       "obey the associative property of addition" in {
-        forAll (sameSize3Vector) { case ((a, b, c)) ⇒
-                (a + b) + c shouldEqual a + (b + c)
+        forAll (sameSize3Vector) { case ((u, v, w)) ⇒
+                (u + v) + w shouldEqual u + (v + w)
         }
       }
       "obey the commutative property of addition" in {
-        forAll (sameSize2Vector) { case ((a, b)) ⇒
-              a + b shouldEqual b + a
+        forAll (sameSize2Vector) { case ((u, v)) ⇒
+              u + v shouldEqual v + u
         }
       }
     }
     "multiplying vectors" should {
       "obey the associative property of multiplication" in {
-        forAll (sameSize2Vector) { case ((a, b)) ⇒
-                a * b shouldEqual b * a
+        forAll (sameSize2Vector) { case ((u, v)) ⇒
+                u * v shouldEqual v * u
         }
       }
     }

@@ -26,26 +26,26 @@ extends Linear {
   def genVector[T: ClassTag](g: Gen[T])(n: Int): Gen[Vector[T]]
     = listOfN(n, g) map (_.toArray)
 
-  val intVector = genMatrix (arbitrary[Int]) _
+  val intVector = genVector (arbitrary[Int]) _
 
-  val sameSize3Matrix = for { n ← choose(1, MAX_ARRAY_SIZE)
+  val sameSize3Matrix = for { n ← choose(2, MAX_ARRAY_SIZE)
                               a ← intMatrix(n)
                               b ← intMatrix(n)
                               c ← intMatrix(n) }
                         yield (a, b, c)
 
-  val sameSize2Matrix = for { n ← choose(1, MAX_ARRAY_SIZE)
+  val sameSize2Matrix = for { n ← choose(2, MAX_ARRAY_SIZE)
                               a ← intMatrix(n)
                               b ← intMatrix(n) }
                         yield (a, b)
 
-  val sameSize3Vector = for { n ← choose(1, MAX_ARRAY_SIZE)
+  val sameSize3Vector = for { n ← choose(2, MAX_ARRAY_SIZE)
                               a ← intVector(n)
                               b ← intVector(n)
                               c ← intVector(n) }
                         yield (a, b, c)
 
-  val sameSize2Vector = for { n ← choose(1, MAX_ARRAY_SIZE)
+  val sameSize2Vector = for { n ← choose(2, MAX_ARRAY_SIZE)
                               a ← intVector(n)
                               b ← intVector(n) }
                         yield (a, b)
