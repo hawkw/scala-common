@@ -84,9 +84,7 @@ package object random {
           "Weight for a must be greater than zero.")
         require(bWeight > 0,
           "Weight for b must be greater than zero.")
-        val choices = Seq(a,b) sortWith {
-          case ((x,_), (y,_)) ⇒ x > y
-        }
+        val choices = Seq(a,b) sortWith { case ((x,_), (y,_)) => x > y }
         val (firstWeight, firstResult) = choices(0)
         val (_, secondResult)          = choices(1)
         random.nextDouble() match {
@@ -96,6 +94,9 @@ package object random {
           // so that it can be evaluated at the call site?
         }
     }
+//
+//  private[this] def sortByFirst[A : Ordering, B](xs: Seq[(A, B)])
+//    = implicitly.Ordering[A]( xs sortWith { case ((x,_), (y,_)) => x > y } )
 
   /**
    * Chooses one of _n_ weighted random options.
@@ -113,9 +114,7 @@ package object random {
   def weightedPickN[T](choices: Seq[(Double, () ⇒ T)])
                       (implicit random: Random): T
     = { require(choices.length >= 2, "Two or more choices must be provided.")
-        choices sortWith {
-          case ((x,_), (y,_)) => x > y
-        } match {
+        choices sortWith { case ((x,_), (y,_)) => x > y } match {
           case Seq(max, min) ⇒ weightedPick2(max,min)(random)
           case Seq(max, rest @ _*) ⇒
             val remainingWeight: Double

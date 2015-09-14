@@ -108,4 +108,10 @@ package object collection {
 
   }
 
+  implicit class Map2Able[A, M[X] <: TraversableOnce[X]](self: M[M[A]])
+  {
+    def map2[B](f: (A) ⇒ B)
+      = self map{ r: M[A] ⇒ r map f }
+  }
+
 }
