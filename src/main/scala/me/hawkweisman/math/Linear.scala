@@ -59,9 +59,9 @@ trait SequentialAlgebra
 extends Linear {
 
   @inline
-  private[this] def zipMap[N: Numeric : ClassTag]
-                          (a: Matrix[N], b: Matrix[N])
-                          (f: (N, N) ⇒ N): Matrix[N]
+  private[this] def zap[N: Numeric : ClassTag]
+                       (a: Matrix[N], b: Matrix[N])
+                       (f: (N, N) ⇒ N): Matrix[N]
     = a zip b map { case ((r1: Array[N], r2: Array[N])) ⇒
         r1 zip r2 map tupled (f)
       }
@@ -80,11 +80,11 @@ extends Linear {
 
   override def matrixAdd[N : Numeric : ClassTag]
                         (a: Matrix[N], b: Matrix[N]): Matrix[N]
-    = zipMap(a, b)(_ + _)
+    = zap(a, b)(_ + _)
 
   override def matrixSub[N : Numeric : ClassTag]
                         (a: Matrix[N], b: Matrix[N]): Matrix[N]
-    = zipMap(a, b)(_ - _)
+    = zap(a, b)(_ - _)
 
   override def crossProduct[N : Numeric : ClassTag]
                            (a: Matrix[N], b: Matrix[N]): Matrix[N]
