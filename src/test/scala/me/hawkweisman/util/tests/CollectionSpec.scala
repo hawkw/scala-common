@@ -7,7 +7,8 @@ import org.scalatest.prop.GeneratorDrivenPropertyChecks
 /**
  * Created by hawk on 5/20/15.
  */
-class CollectionSpec extends FlatSpec
+class CollectionSpec
+extends FlatSpec
   with GeneratorDrivenPropertyChecks
   with Matchers {
 

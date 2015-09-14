@@ -9,7 +9,8 @@ import org.scalacheck.Arbitrary.arbitrary
 /**
  * Created by hawk on 5/9/15.
  */
-class UtilSpec extends FlatSpec
+class UtilSpec
+extends FlatSpec
   with GeneratorDrivenPropertyChecks
   with Matchers {
 

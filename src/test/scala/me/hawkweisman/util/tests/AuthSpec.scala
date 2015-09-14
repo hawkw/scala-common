@@ -10,7 +10,8 @@ import org.scalatest.prop.GeneratorDrivenPropertyChecks
 /**
  * Created by hawk on 3/12/15.
  */
-class AuthSpec extends FlatSpec
+class AuthSpec
+extends FlatSpec
   with GeneratorDrivenPropertyChecks
   with Matchers {
 

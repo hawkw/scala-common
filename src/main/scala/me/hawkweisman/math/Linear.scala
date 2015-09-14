@@ -6,6 +6,8 @@ import scala.reflect.ClassTag
 import Numeric.Implicits._
 
 /**
+ * A mixin trait providing a linear algebra DSL.
+ *
  * Created by hawk on 9/13/15.
  */
 trait Linear {

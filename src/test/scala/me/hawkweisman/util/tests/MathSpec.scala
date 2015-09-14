@@ -4,7 +4,8 @@ package tests
 import org.scalatest.{Matchers, FlatSpec}
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
 
-class MathSpec extends FlatSpec
+class MathSpec
+extends FlatSpec
   with GeneratorDrivenPropertyChecks
   with Matchers {
 
