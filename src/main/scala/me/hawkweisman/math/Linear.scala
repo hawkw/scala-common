@@ -114,6 +114,13 @@ extends Linear {
 trait ParallelAlgebra
 extends Linear {
 
+  @inline
+  private[this] def zap[N: ClassTag](a: Matrix[N], b: Matrix[N])
+                       (f: (N, N) ⇒ N): Matrix[N]
+    = a.par zip b.par map { case ((u, v)) ⇒
+        u.par zip v.par map tupled (f) toArray
+      } toArray
+
   override def vectorAdd[N : Numeric : ClassTag]
                         (a: Vector[N], b: Vector[N]): Vector[N]
     = { require(a.length == b.length, "Cannot add vectors of unequal length" )
@@ -139,16 +146,14 @@ extends Linear {
                         (a: Matrix[N], b: Matrix[N]): Matrix[N]
     = { require ( a.length == b.length && a(0).length == b(0).length
                 , "Cannot add matrices of unequal size" )
-        (for {(r1, r2) ← a.par zip b.par}
-          yield r1.par zip r2.par map tupled (_ + _) toArray ).toArray
+        zap(a, b)(_ + _)
       }
 
   override def matrixSub[N : Numeric : ClassTag]
                         (a: Matrix[N], b: Matrix[N]): Matrix[N]
     = { require ( a.length == b.length && a(0).length == b(0).length
                 , "Cannot subtract matrices of unequal size" )
-        (for { (r1, r2) ← a.par zip b.par }
-          yield r1.par zip r2.par map tupled (_ - _) toArray ).toArray
+        zap(a, b)(_ - _)
       }
 
   override def crossProduct[N : Numeric : ClassTag]
