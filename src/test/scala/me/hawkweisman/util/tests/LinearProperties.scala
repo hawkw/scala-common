@@ -2,7 +2,8 @@ package me.hawkweisman.util.tests
 
 import me.hawkweisman.math.{ SequentialAlgebra
                            , ParallelAlgebra
-                           , Linear}
+                           , Linear
+                           }
 import org.scalatest.{ WordSpec
                      , Matchers
                      }
@@ -14,58 +15,60 @@ import org.scalatest.prop.GeneratorDrivenPropertyChecks
  *
  * Created by hawk on 9/13/15.
  */
-trait LinearLaws
+abstract class LinearLaws(val name: String)
 extends WordSpec
   with GeneratorDrivenPropertyChecks
   with Matchers
-  with Linear {
-
-  val name: String
+  with Linear
+  with LinearGenerators {
 
   s"The $name algebra" when {
     "adding matrices" should {
       "obey the associative property of addition" in {
-        forAll { ( a: Array[Array[Int]]
-                 , b: Array[Array[Int]]
-                 , c: Array[Array[Int]]) ⇒
-                (a + b) + c shouldEqual a + (b + c) }
-        }
-      "obey the commutative property of addition" in {
-        forAll { (a: Array[Array[Int]], b: Array[Array[Int]]) ⇒
-                  a + b shouldEqual b + a }
+        forAll (sameSize3Matrix) { case ((a, b, c)) ⇒
+                (a + b) + c shouldEqual a + (b + c)
         }
       }
+      "obey the commutative property of addition" in {
+        forAll (sameSize2Matrix) { case ((a, b)) ⇒
+                a + b shouldEqual b + a
+        }
+      }
+    }
     "multiplying matrices" should {
       "obey the associative property of multiplication" in {
-        forAll { (a: Array[Array[Int]], b: Array[Array[Int]]) ⇒
-                  a + b shouldEqual b + a }
+        forAll (sameSize2Matrix) { case ((a, b)) ⇒
+                a + b shouldEqual b + a
+        }
+
       }
     }
     "adding vectors" should {
       "obey the associative property of addition" in {
-        forAll { (a: Array[Int], b: Array[Int], c: Array[Int]) ⇒
-                 (a + b) + c shouldEqual a + (b + c) }
+        forAll (sameSize3Vector) { case ((a, b, c)) ⇒
+                (a + b) + c shouldEqual a + (b + c)
+        }
       }
       "obey the commutative property of addition" in {
-        forAll { (a: Array[Int], b: Array[Int]) ⇒
-                  a + b shouldEqual b + a }
+        forAll (sameSize2Vector) { case ((a, b)) ⇒
+              a + b shouldEqual b + a
+        }
       }
     }
     "multiplying vectors" should {
       "obey the associative property of multiplication" in {
-        forAll { (a: Array[Int], b: Array[Int]) ⇒
-                  a * b shouldEqual b * a }
+        forAll (sameSize2Vector) { case ((a, b)) ⇒
+                a * b shouldEqual b * a
+        }
       }
     }
   }
 }
 
 class ParLinearProperties
-extends LinearLaws
+extends LinearLaws("parallel")
   with ParallelAlgebra
-{ override val name = "parallel" }
 
 class SeqLinearProperties
-extends LinearLaws
+extends LinearLaws("sequential")
   with SequentialAlgebra
-{ override val name = "sequential" }
