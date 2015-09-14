@@ -37,6 +37,30 @@ trait Linear {
   def crossProduct[N: Numeric: ClassTag](a: Matrix[N], b: Matrix[N]): Matrix[N]
 
 
+  implicit class RightScalarVectorOps[N : Numeric : ClassTag](s: N) {
+
+    def +(v: Vector[N]): Vector[N]
+      = vectorScalarAdd(v, s)
+
+    def -(v: Vector[N]): Vector[N]
+      = vectorScalarSub(v, s)
+
+    def *(v: Vector[N]): Vector[N]
+      = vectorScalarMul(v, s)
+  }
+
+  implicit class RightScalarMatrixOps[N : Numeric : ClassTag](s: N) {
+
+    def +(m: Matrix[N]): Matrix[N]
+      = matrixScalarAdd(m, s)
+
+    def -(m: Matrix[N]): Matrix[N]
+      = matrixScalarSub(m, s)
+
+    def *(m: Matrix[N]): Matrix[N]
+      = matrixScalarMul(m, s)
+  }
+
   implicit class VectorOps[N : Numeric : ClassTag](v: Vector[N])
   {
     require(v.length > 0, "Vectors must have 1 or more elements")
@@ -49,6 +73,15 @@ trait Linear {
 
     def *(that: Vector[N]): N
       = dotProduct(v, that)
+
+    def +(s: N): Vector[N]
+      = vectorScalarAdd(v, s)
+
+    def -(s: N): Vector[N]
+      = vectorScalarSub(v,s)
+
+    def *(s: N): Vector[N]
+      = vectorScalarMul(v, s)
   }
 
   implicit class MatrixOps[N : Numeric : ClassTag](m: Matrix[N])
@@ -64,6 +97,15 @@ trait Linear {
 
     def *(that: Matrix[N]): Matrix[N]
       = crossProduct(m, that)
+
+    def +(s: N): Matrix[N]
+      = matrixScalarAdd(m, s)
+
+    def -(s: N): Matrix[N]
+      = matrixScalarSub(m, s)
+
+    def *(s: N): Matrix[N]
+      = matrixScalarMul(m, s)
   }
 }
 
