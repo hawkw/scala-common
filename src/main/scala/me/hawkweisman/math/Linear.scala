@@ -1,8 +1,9 @@
-package me.hawkweisman.math.linear
+package me.hawkweisman.math
 
+import scala.Function._
 import scala.language.postfixOps
 import scala.reflect.ClassTag
-import scala.Function._
+import Numeric.Implicits._
 
 /**
  * Created by hawk on 9/13/15.
@@ -71,23 +72,23 @@ extends Linear {
 
   override def vectorAdd[N: Numeric](a: Vector[N], b: Vector[N])
                                     (implicit ev1: ClassTag[N]): Vector[N]
-    = a zip b map tupled (implicitly[Numeric[N]].plus(_, _))
+    = a zip b map tupled (_ + _)
 
   override def vectorSub[N: Numeric](a: Vector[N], b: Vector[N])
                                     (implicit ev1: ClassTag[N]): Vector[N]
-    = a zip b map tupled (implicitly[Numeric[N]].minus(_, _))
+    = a zip b map tupled (_ - _)
 
   override def dotProduct[N: Numeric](a: Vector[N], b: Vector[N])
                                      (implicit ev1: ClassTag[N]): N
-    = a zip b map tupled (implicitly[Numeric[N]].times(_, _)) sum
+    = a zip b map tupled (_ * _) sum
 
   override def matrixAdd[N: Numeric](a: Matrix[N], b: Matrix[N])
                                     (implicit ev1: ClassTag[N]): Matrix[N]
-    = zipMap(a, b)((a: N, b: N) ⇒ implicitly[Numeric[N]].plus(a, b))
+    = zipMap(a, b)(_ + _)
 
   override def matrixSub[N: Numeric](a: Matrix[N], b: Matrix[N])
                                     (implicit ev1: ClassTag[N]): Matrix[N]
-    = zipMap(a, b)((a: N, b: N) ⇒ implicitly[Numeric[N]].minus(a, b))
+    = zipMap(a, b)(_ - _)
 
   override def crossProduct[N: Numeric](a: Matrix[N], b: Matrix[N])
                                        (implicit ev1: ClassTag[N]): Matrix[N]
@@ -104,24 +105,21 @@ extends Linear {
                                     (implicit ev1: ClassTag[N]): Vector[N]
     = { require( a.length == b.length
                , "Cannot add vectors of unequal length" )
-        (for { (n, m) ← a.par zip b.par }
-          yield implicitly[Numeric[N]].plus(n, m)) toArray
+        a.par zip b.par map tupled (_ + _) toArray
       }
 
   override def vectorSub[N: Numeric](a: Vector[N], b: Vector[N])
                                     (implicit ev1: ClassTag[N]): Vector[N]
     = { require( a.length == b.length
                , "Cannot subtract vectors of unequal length" )
-        (for { (n, m) ← a.par zip b.par }
-          yield implicitly[Numeric[N]].minus(n, m)) toArray
+         a.par zip b.par map tupled (_ - _ ) toArray
       }
 
   override def dotProduct[N: Numeric](a: Vector[N], b: Vector[N])
                                      (implicit ev1: ClassTag[N]): N
   = { require( a.length == b.length
              , "Cannot take dot product of vectors of unequal length" )
-      (for { (n, m) ← a.par zip b.par }
-        yield implicitly[Numeric[N]].minus(n, m)) sum
+      a.par zip b.par map tupled (_ * _) sum
     }
 
   override def matrixAdd[N: Numeric](a: Matrix[N], b: Matrix[N])
@@ -129,10 +127,8 @@ extends Linear {
     = { require ( a.length == b.length && a(0).length == b(0).length
                 , "Cannot add matrices of unequal size" )
         (for {(r1, r2) ← a.par zip b.par}
-          yield (for {(x, y) ← r1.par zip r2.par}
-            yield implicitly[Numeric[N]].plus(x, y))
-            .toArray)
-          .toArray
+          yield r1.par zip r2.par map tupled (_ + _) toArray)
+            .toArray
       }
 
   override def matrixSub[N: Numeric](a: Matrix[N], b: Matrix[N])
@@ -140,10 +136,8 @@ extends Linear {
     = { require ( a.length == b.length && a(0).length == b(0).length
                 , "Cannot subtract matrices of unequal size" )
         (for {(r1, r2) ← a.par zip b.par}
-          yield (for {(x, y) ← r1.par zip r2.par}
-            yield implicitly[Numeric[N]].minus(x, y))
-            .toArray)
-          .toArray
+          yield r1.par zip r2.par map tupled (_ - _) toArray)
+            .toArray
       }
 
   override def crossProduct[N: Numeric](a: Matrix[N], b: Matrix[N])
