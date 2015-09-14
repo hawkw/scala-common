@@ -101,6 +101,7 @@ extends Linear {
                         (a: Vector[N], b: Vector[N]): Vector[N]
     = { require( a.length == b.length
                , "Cannot add vectors of unequal length" )
+        require(a.length > 0, "Vectors must have nonzero length")
         a.par zip b.par map tupled (_ + _) toArray
       }
 
@@ -108,6 +109,7 @@ extends Linear {
                         (a: Vector[N], b: Vector[N]): Vector[N]
     = { require( a.length == b.length
                , "Cannot subtract vectors of unequal length" )
+        require(a.length > 0, "Vectors must have nonzero length")
          a.par zip b.par map tupled (_ - _ ) toArray
       }
 
@@ -115,6 +117,7 @@ extends Linear {
                          (a: Vector[N], b: Vector[N]): N
   = { require( a.length == b.length
              , "Cannot take dot product of vectors of unequal length" )
+      require(a.length > 0, "Vectors must have nonzero length")
       a.par zip b.par map tupled (_ * _) sum
     }
 
@@ -122,23 +125,30 @@ extends Linear {
                         (a: Matrix[N], b: Matrix[N]): Matrix[N]
     = { require ( a.length == b.length && a(0).length == b(0).length
                 , "Cannot add matrices of unequal size" )
+        require ( a.length > 0 && a(0).length > 0
+                , "Matrices must have nonzero length" )
         (for {(r1, r2) ← a.par zip b.par}
-          yield r1.par zip r2.par map tupled (_ + _) toArray)
-            .toArray
+          yield r1.par zip r2.par map tupled (_ + _) toArray ).toArray
       }
 
   override def matrixSub[N : Numeric : ClassTag]
                         (a: Matrix[N], b: Matrix[N]): Matrix[N]
     = { require ( a.length == b.length && a(0).length == b(0).length
                 , "Cannot subtract matrices of unequal size" )
-        (for {(r1, r2) ← a.par zip b.par}
-          yield r1.par zip r2.par map tupled (_ - _) toArray)
-            .toArray
+        require ( a.length > 0 && a(0).length > 0
+          , "Matrices must have nonzero length" )
+        (for { (r1, r2) ← a.par zip b.par }
+          yield r1.par zip r2.par map tupled (_ - _) toArray ).toArray
       }
 
   override def crossProduct[N : Numeric : ClassTag]
                            (a: Matrix[N], b: Matrix[N]): Matrix[N]
-    = (for ( row ← a.par )
-        yield for ( col ← b.transpose )
-          yield row * col) toArray
+    = { require ( a.length == b.length && a(0).length == b(0).length
+                , "Cannot take cross product of matrices of unequal size" )
+        require(a.length > 0, "Matrices must have nonzero length")
+        (for ( row ← a.par )
+          yield for ( col ← b.transpose )
+            yield row * col) toArray
+      }
+
 }
