@@ -8,7 +8,29 @@ import Fractional.Implicits._
 
 
 /**
+ * ==Linear==
+ *
  * A mixin trait providing a linear algebra DSL.
+ *
+ * This trait adds vector operations to all arrays whose elements are
+ * [[Numeric]], and matrix operations to all two-dimensional arrays whose
+ * elements are [[Numeric]].
+ *
+ * Scalar/vector and scalar/matrix operations are available as well, using a
+ * syntax similar to Haskell's
+ * [[https://hackage.haskell.org/package/linear-1.20.1/docs/Linear-Vector.html
+ * Linear.Vector]] package. When using linear/scalar operators, place the caret
+ * (`^`) on the side of the operator facing towards the linear operand, and the
+ * side without the caret facing towards the scalar operand.
+ *
+ * This trait only provides an interface to the linear algebra DSL. In order
+ * to actually perform linear operations, you must also mix in one of the
+ * implementation traits: either [[SequentialAlgebra]], a naive implementation
+ * which uses sequential array traversals, or [[ParallelAlgebra]], which uses
+ * Scala's [[scala.collection.parallel parallel collections]] for faster
+ * performance.
+ *
+ * @author Hawk Weisman
  *
  * Created by hawk on 9/13/15.
  */
@@ -36,6 +58,24 @@ trait Linear {
 
   def crossProduct[N: Numeric: ClassTag](a: Matrix[N], b: Matrix[N]): Matrix[N]
 
+  /**
+   * Implicit class wrapping an array of [[Numeric]] elements
+   * to provide vector algebra operators.
+   *
+   * [[VectorOps]] provides all vector-vector operations, and left-scalar
+   * vector-scalar operations.
+   *
+   * Ideally, the vector-scalar operations could be performed using the actual
+   * `+`, `-`, and `*` operators, but unfortunately, due to the Java Virtual
+   * Machine's type erasure, these definitions conflict. Instead, vector-scalar
+   * operations used "winged" operators a la Haskell's `Linear.Vector`. The
+   * caret character (`^`) goes on the vector side.
+   *
+   * @param v the wrapped vector
+   * @param ev1 evidence that the elements of the array are [[Numeric]]
+   * @param ev2 evidence that the elements of the array have [[ClassTag]]s
+   * @tparam N the type of elements in the array.
+   */
   implicit class VectorOps[N: Numeric : ClassTag](v: Vector[N]) {
     require(v.length > 0, "Vectors must have 1 or more elements")
 
@@ -58,6 +98,14 @@ trait Linear {
       = vectorScalarMul(v, s)
   }
 
+  /**
+   * Provides additional operators for vectors whose elements are [[Fractional]]
+   *
+   * @param v the wrapped vector
+   * @param ev1 evidence that the elements of the array are [[Fractional]]
+   * @param ev2 evidence that the elements of the array have [[ClassTag]]s
+   * @tparam F the type of elements in the array.
+   */
   implicit class FractionalVectorOps[F: Fractional : ClassTag](v: Vector[F]) {
     require(v.length > 0, "Vectors must have 1 or more elements")
 
@@ -65,6 +113,20 @@ trait Linear {
       = vectorScalarDiv(v, s)
   }
 
+  /**
+   * Provides vector-scalar operators for a right-hand scalar quantity.
+   *
+   * Ideally, the vector-scalar operations could be performed using the actual
+   * `+`, `-`, and `*` operators, but unfortunately, due to the Java Virtual
+   * Machine's type erasure, these definitions conflict. Instead, vector-scalar
+   * operations used "winged" operators a la Haskell's `Linear.Vector`. The
+   * caret character (`^`) goes on the vector side.
+   *
+   * @param s the wrapped scalar quantity
+   * @param ev1 evidence that the scalar variable is [[Numeric]]
+   * @param ev2 evidence that the scalar variable has a [[ClassTag]]
+   * @tparam N the type of the scalar quantity
+   */
   implicit class RightScalarVectorOps[N : Numeric : ClassTag](s: N) {
 
     def +^(v: Vector[N]): Vector[N]
@@ -77,11 +139,38 @@ trait Linear {
     = vectorScalarMul(v, s)
   }
 
+  /**
+   * Provides additional vector operators for [[Fractional]]
+   * scalar quantities on the right-hand side.
+   *
+   * @param v the wrapped scalar quantity
+   * @param ev1 evidence that the scalar quantity is [[Fractional]]
+   * @param ev2 evidence that the scalar quantity has a [[ClassTag]]s
+   * @tparam F the type of the scalar quantity
+   */
   implicit class RightFractionalVectorOps[F: Fractional : ClassTag](s: F) {
     def /^(v: Vector[F]): Vector[F]
       = vectorScalarDiv(v, s)
   }
 
+  /**
+   * Implicit class wrapping a two-dimensional array of [[Numeric]] elements
+   * to provide matrix algebra operations.
+   *
+   * [[MatrixOps]] provides all matrix-matrix operations, and left-scalar
+   * matrix-scalar operations.
+   *
+   * Ideally, the matrix-scalar operations could be performed using the actual
+   * `+`, `-`, and `*` operators, but unfortunately, due to the Java Virtual
+   * Machine's type erasure, these definitions conflict. Instead, matrix-matrix
+   * operations used "winged" operators a la Haskell's `Linear.Vector`. The
+   * caret character (`^`) goes on the matrix side.
+   *
+   * @param m the wrapped 2D array
+   * @param ev1 evidence that the elements of the array are [[Numeric]]
+   * @param ev2 evidence that the elements of the array have [[ClassTag]]s
+   * @tparam N the type of elements in the array.
+   */
   implicit class MatrixOps[N: Numeric : ClassTag](m: Matrix[N]) {
     require(m.length > 0, "Matrices must have 1 or more columns")
     require(m(0).length > 0, "Matrices must have 1 or more rows")
@@ -105,6 +194,15 @@ trait Linear {
       = matrixScalarMul(m, s)
   }
 
+  /**
+   * Provides additional operators for matrices
+   * whose elements are [[Fractional]].
+   *
+   * @param v the wrapped 2D array representing the matrix
+   * @param ev1 evidence that the elements of the array are [[Fractional]]
+   * @param ev2 evidence that the elements of the array have [[ClassTag]]s
+   * @tparam F the type of elements in the array.
+   */
   implicit class FractionalMatrixOps[F: Fractional : ClassTag](m: Matrix[F]) {
     require(m.length > 0, "Matrices must have 1 or more columns")
     require(m(0).length > 0, "Matrices must have 1 or more rows")
@@ -112,7 +210,20 @@ trait Linear {
     def ^/(s: F): Matrix[F]
       = matrixScalarDiv(m, s)
   }
-
+  /**
+   * Provides matrix-scalar operations for a right-hand scalar quantity.
+   *
+   * Ideally, the matrix-scalar operations could be performed using the actual
+   * `+`, `-`, and `*` operators, but unfortunately, due to the Java Virtual
+   * Machine's type erasure, these definitions conflict. Instead, matrix-scalar
+   * operations used "winged" operators a la Haskell's `Linear.Vector`. The
+   * caret character (`^`) goes on the matrix side.
+   *
+   * @param s the wrapped scalar quantity
+   * @param ev1 evidence that the scalar variable is [[Numeric]]
+   * @param ev2 evidence that the scalar variable has a [[ClassTag]]
+   * @tparam N the type of the scalar quantity
+   */
   implicit class RightScalarMatrixOps[N: Numeric : ClassTag](s: N) {
 
     def +^(m: Matrix[N]): Matrix[N]
@@ -125,12 +236,28 @@ trait Linear {
       = matrixScalarMul(m, s)
   }
 
+  /**
+   * Provides additional matrix operators for [[Fractional]]
+   * scalar quantities on the right-hand side.
+   *
+   * @param v the wrapped scalar quantity
+   * @param ev1 evidence that the scalar quantity is [[Fractional]]
+   * @param ev2 evidence that the scalar quantity has a [[ClassTag]]s
+   * @tparam F the type of the scalar quantity
+   */
   implicit class RightFractionalMatrixOps[F: Fractional : ClassTag](s: F) {
     def /^(m: Matrix[F]): Matrix[F]
       = matrixScalarDiv(m, s)
   }
 }
 
+/**
+ * Sequential linear algebra implementation.
+ *
+ * In most cases, this will offer inferior performance to [[ParallelAlgebra]].
+ *
+ * @author Hawk Weisman
+ */
 trait SequentialAlgebra
 extends Linear {
 
@@ -217,6 +344,18 @@ extends Linear {
 
 }
 
+
+/**
+ * Parallel linear algebra implementation.
+ *
+ * This uses Scala's
+ * [[scala.collection.parallel.mutable.ParArray explicitly parallel arrays]] to
+ * parallelize vector and matrix operations. In general, this will tend to
+ * offer much better performance than [[SequentialAlgebra]], especially for
+ * larger vectors and matrices.
+ *
+ * @author Hawk Weisman
+ */
 trait ParallelAlgebra
 extends Linear {
 
