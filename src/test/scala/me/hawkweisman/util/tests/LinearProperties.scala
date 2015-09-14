@@ -44,8 +44,11 @@ extends WordSpec
     }
     "multiplying matrices and scalars" should {
       "obey the associative property of multiplication" in {
-        forAll { (m: Matrix[Int], r: Int, s: Int) ⇒
-          (r * s) * m shouldEqual r * (s * m) }
+        forAll { (m: Array[Array[Int]], r: Int, s: Int) ⇒
+          whenever(m.nonEmpty && m(0).nonEmpty) {
+            (r * s) *^ m shouldEqual r *^ (s *^ m)
+          }
+        }
       }
     }
 
@@ -70,17 +73,27 @@ extends WordSpec
     }
     "adding vectors and scalars" should {
       "obey the commutative property of addition" in {
-        forAll { (v: Vector[Int], s: Int) ⇒ v + s shouldEqual s + v }
+        forAll { (v: Array[Int], s: Int) ⇒
+          whenever (v nonEmpty) {
+            v ^+ s shouldEqual s +^ v
+          }
+        }
       }
     }
     "multiplying vectors and scalars" should {
       "obey the associative property of multiplication" in {
-        forAll { (v: Vector[Int], s: Int, r: Int) ⇒
-          r * (s * v) shouldEqual (r * s) * v }
+        forAll { (v: Array[Int], s: Int, r: Int) ⇒
+          whenever(v nonEmpty) {
+            r *^ (s *^ v) shouldEqual (r * s) *^ v
+          }
+        }
       }
       "obey the distributive property of multiplication" in {
-        forAll { (v: Vector[Int], s: Int, r: Int) ⇒
-          (r + s) * v shouldEqual (r * v) + (s * v) }
+        forAll { (v: Array[Int], s: Int, r: Int) ⇒
+          whenever (v nonEmpty) {
+            (r + s) *^ v shouldEqual (r *^ v) + (s *^ v)
+          }
+        }
       }
     }
   }
