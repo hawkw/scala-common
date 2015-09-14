@@ -11,7 +11,6 @@ import Numeric.Implicits._
  * Created by hawk on 9/13/15.
  */
 trait Linear {
-
   type Vector[N] = Array[N]
   type Matrix[N] = Vector[Vector[N]]
 
@@ -68,29 +67,52 @@ extends Linear {
 
   override def vectorAdd[N : Numeric : ClassTag]
                         (a: Vector[N], b: Vector[N]): Vector[N]
-    = a zip b map tupled (_ + _)
+    = { require( a.length == b.length
+                , "Cannot add vectors of unequal length" )
+        require(a.length > 0, "Vectors must have nonzero length")
+        a zip b map tupled(_ + _)
+      }
 
   override def vectorSub[N : Numeric : ClassTag]
                         (a: Vector[N], b: Vector[N]): Vector[N]
-    = a zip b map tupled (_ - _)
+    = { require( a.length == b.length
+                , "Cannot subtract of vectors of unequal length" )
+        require(a.length > 0, "Vectors must have nonzero length")
+        a zip b map tupled(_ - _)
+      }
 
   override def dotProduct[N : Numeric : ClassTag]
                          (a: Vector[N], b: Vector[N]): N
-    = a zip b map tupled (_ * _) sum
+    = { require( a.length == b.length
+               , "Cannot take dot product of vectors of unequal length" )
+        require(a.length > 0, "Vectors must have nonzero length")
+        a zip b map tupled (_ * _) sum
+      }
 
   override def matrixAdd[N : Numeric : ClassTag]
                         (a: Matrix[N], b: Matrix[N]): Matrix[N]
-    = zap(a, b)(_ + _)
+    = { require( a.length == b.length
+               , "Cannot add matrices of unequal size")
+        require(a.length > 0, "Matrices must have nonzero length")
+        zap(a, b)(_ + _)
+  }
 
   override def matrixSub[N : Numeric : ClassTag]
                         (a: Matrix[N], b: Matrix[N]): Matrix[N]
-    = zap(a, b)(_ - _)
+    = { require( a.length == b.length && a(0).length == b(0).length
+               , "Cannot subtract  matrices of unequal size")
+        require(a.length > 0, "Matrices must have nonzero length")
+        zap(a, b)(_ - _)
+      }
 
   override def crossProduct[N : Numeric : ClassTag]
                            (a: Matrix[N], b: Matrix[N]): Matrix[N]
-    = for ( row ← a )
-        yield for ( col ← b transpose )
+    = { require( a.length == b.length && a(0).length == b(0).length
+                , "Cannot take cross product of matrices of unequal size")
+        require(a.length > 0, "Matrices must have nonzero length")
+        for (row ← a) yield for (col ← b transpose)
           yield row * col
+      }
 
 }
 
