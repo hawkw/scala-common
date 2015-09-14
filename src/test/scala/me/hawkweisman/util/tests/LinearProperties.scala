@@ -207,7 +207,7 @@ extends WordSpec
         }
       }
     }
-    "subtracting matrices" should {
+    "subtracting vectors" should {
       "provide the same result as an iterative algorithm" in {
         forAll (sameSize2Vector) { case ((v: Vector[Int], u: Vector[Int])) ⇒
           var w: Vector[Int] = Array ofDim[Int] v.length
