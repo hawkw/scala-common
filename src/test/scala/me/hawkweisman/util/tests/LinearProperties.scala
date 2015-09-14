@@ -99,10 +99,179 @@ extends WordSpec
   }
 }
 
-class ParLinearProperties
+trait LinearCorrectness
+extends WordSpec
+  with GeneratorDrivenPropertyChecks
+  with Matchers
+  with Linear
+  with LinearGenerators {
+
+  def name: String
+
+  s"The $name algebra" when {
+    "adding matrices" should {
+      "evaluate correctly for a known-good example" in {
+        val m = Array ( Array(0, 1, 2)
+                      , Array(9, 8, 7) )
+        val n = Array ( Array(6, 5, 4)
+                      , Array(3, 4, 5) )
+        var o = Array ( Array(6,  6,  6)
+                      , Array(12, 12, 12) )
+        n + m shouldEqual o
+      }
+      "provide the same result as an iterative algorithm" in {
+        forAll (sameSize2Matrix) { case ((m: Matrix[Int], n: Matrix[Int])) ⇒
+          var o: Array[Array[Int]] = Array ofDim[Int](m.length, m(0).length)
+
+          for { i ← m.indices
+                j ← m(0).indices
+              } {
+                o(i)(j) = m(i)(j) + n(i)(j)
+              }
+          m + n shouldEqual o
+        }
+      }
+    }
+    "subtracting matrices" should {
+      "provide the same result as an iterative algorithm" in {
+        forAll (sameSize2Matrix) { case ((m: Matrix[Int], n: Matrix[Int])) ⇒
+          var o: Array[Array[Int]] = Array ofDim[Int](m.length, m(0).length)
+
+          for { i ← m.indices
+                j ←  m(0).indices
+          } {
+            o(i)(j) = m(i)(j) - n(i)(j)
+          }
+          m - n shouldEqual o
+        }
+      }
+    }
+    "subtracting matrices and scalars" should {
+      "provide the same result as an iterative algorithm" in {
+        forAll { (m: Array[Array[Int]], s: Int) ⇒
+          whenever(m.nonEmpty && m(0).nonEmpty) {
+            var o: Array[Array[Int]] = Array ofDim[Int](m.length, m(0).length)
+
+            for {i ← m.indices
+                 j ← m(0).indices
+            } {
+              o(i)(j) = m(i)(j) - s
+            }
+            m ^- s shouldEqual o
+          }
+        }
+      }
+    }
+    "adding matrices and scalars" should {
+      "provide the same result as an iterative algorithm" in {
+        forAll { (m: Array[Array[Int]], s: Int) ⇒
+          whenever(m.nonEmpty && m(0).nonEmpty) {
+            var o: Array[Array[Int]] = Array ofDim[Int](m.length, m(0).length)
+
+            for {i ← m.indices
+                 j ← m(0).indices
+            } {
+              o(i)(j) = m(i)(j) + s
+            }
+            m ^- s shouldEqual o
+          }
+        }
+      }
+    }
+    "multiplying matrices and scalars" should {
+      "provide the same result as an iterative algorithm" in {
+        forAll { (m: Array[Array[Int]], s: Int) ⇒
+          whenever(m.nonEmpty && m(0).nonEmpty) {
+            var o: Array[Array[Int]] = Array ofDim[Int](m.length, m(0).length)
+
+            for {i ← m.indices
+                 j ← m(0).indices
+            } {
+              o(i)(j) = m(i)(j) * s
+            }
+            m ^* s shouldEqual o
+          }
+        }
+      }
+    }
+    "adding vectors" should {
+      "provide the same result as an iterative algorithm" in {
+        forAll (sameSize2Vector) { case ((v: Vector[Int], u: Vector[Int])) ⇒
+          var w: Vector[Int] = Array ofDim[Int] v.length
+
+          for { i ← v.indices
+          } {
+            w(i) = v(i) + u(i)
+          }
+          u + v shouldEqual w
+        }
+      }
+    }
+    "subtracting matrices" should {
+      "provide the same result as an iterative algorithm" in {
+        forAll (sameSize2Vector) { case ((v: Vector[Int], u: Vector[Int])) ⇒
+          var w: Vector[Int] = Array ofDim[Int] v.length
+
+          for { i ← v.indices
+          } {
+            w(i) = v(i) - u(i)
+          }
+          u - v shouldEqual w
+        }
+      }
+    }
+    "subtracting vectors and scalars" should {
+      "provide the same result as an iterative algorithm" in {
+        forAll { (v: Array[Int], s: Int) ⇒
+          whenever(v.nonEmpty) {
+            var u: Vector[Int] = Array ofDim[Int] v.length
+
+            for { i ← u.indices } {
+              u(i) = v(i) - s
+            }
+            v ^- s shouldEqual u
+          }
+        }
+      }
+    }
+    "adding vectors and scalars" should {
+      "provide the same result as an iterative algorithm" in {
+        forAll { (v: Array[Int], s: Int) ⇒
+          whenever(v.nonEmpty) {
+            var u: Vector[Int] = Array ofDim[Int] v.length
+
+            for { i ← u.indices } {
+              u(i) = v(i) + s
+            }
+            v ^+ s shouldEqual u
+          }
+        }
+      }
+    }
+    "multiplying vectors and scalars" should {
+      "provide the same result as an iterative algorithm" in {
+        forAll { (v: Array[Int], s: Int) ⇒
+          whenever(v.nonEmpty) {
+            var u: Vector[Int] = Array ofDim[Int] v.length
+
+            for { i ← u.indices } {
+              u(i) = v(i) * s
+            }
+            v ^* s shouldEqual u
+          }
+        }
+      }
+    }
+  }
+}
+
+
+class ParLinearSpec
 extends LinearLaws("parallel")
+  with LinearCorrectness
   with ParallelAlgebra
 
-class SeqLinearProperties
+class SeqLinearSpec
 extends LinearLaws("sequential")
+  with LinearCorrectness
   with SequentialAlgebra

@@ -99,7 +99,12 @@ trait Linear {
   }
 
   /**
-   * Provides additional operators for vectors whose elements are [[Fractional]]
+   * Provides additional operators for vectors
+   * whose elements are [[Fractional]].
+   *
+   * Since Scala's [[Numeric]] typeclass doesn't provide a division operator,
+   * vector-scalar division is only available on [[Fractional]] vectors and
+   * [[Fractional]] scalars.
    *
    * @param v the wrapped vector
    * @param ev1 evidence that the elements of the array are [[Fractional]]
@@ -143,7 +148,11 @@ trait Linear {
    * Provides additional vector operators for [[Fractional]]
    * scalar quantities on the right-hand side.
    *
-   * @param v the wrapped scalar quantity
+   * Since Scala's [[Numeric]] typeclass doesn't provide a division operator,
+   * vector-scalar division is only available on [[Fractional]] vectors and
+   * [[Fractional]] scalars.
+   *
+   * @param s the wrapped scalar quantity
    * @param ev1 evidence that the scalar quantity is [[Fractional]]
    * @param ev2 evidence that the scalar quantity has a [[ClassTag]]s
    * @tparam F the type of the scalar quantity
@@ -198,7 +207,11 @@ trait Linear {
    * Provides additional operators for matrices
    * whose elements are [[Fractional]].
    *
-   * @param v the wrapped 2D array representing the matrix
+   * Since Scala's [[Numeric]] typeclass doesn't provide a division operator,
+   * matrix-scalar division is only available on [[Fractional]] matrices and
+   * [[Fractional]] scalars.
+   *
+   * @param m the wrapped 2D array representing the matrix
    * @param ev1 evidence that the elements of the array are [[Fractional]]
    * @param ev2 evidence that the elements of the array have [[ClassTag]]s
    * @tparam F the type of elements in the array.
@@ -240,7 +253,11 @@ trait Linear {
    * Provides additional matrix operators for [[Fractional]]
    * scalar quantities on the right-hand side.
    *
-   * @param v the wrapped scalar quantity
+   * Since Scala's [[Numeric]] typeclass doesn't provide a division operator,
+   * matrix-scalar division is only available on [[Fractional]] matrices and
+   * [[Fractional]] scalars.
+   *
+   * @param s the wrapped scalar quantity
    * @param ev1 evidence that the scalar quantity is [[Fractional]]
    * @param ev2 evidence that the scalar quantity has a [[ClassTag]]s
    * @tparam F the type of the scalar quantity
