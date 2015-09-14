@@ -59,6 +59,8 @@ trait Linear {
   }
 
   implicit class FractionalVectorOps[F: Fractional : ClassTag](v: Vector[F]) {
+    require(v.length > 0, "Vectors must have 1 or more elements")
+
     def /(s: F): Vector[F]
       = vectorScalarDiv(v, s)
   }
@@ -104,12 +106,14 @@ trait Linear {
   }
 
   implicit class FractionalMatrixOps[F: Fractional : ClassTag](m: Matrix[F]) {
+    require(m.length > 0, "Matrices must have 1 or more columns")
+    require(m(0).length > 0, "Matrices must have 1 or more rows")
+
     def /(s: F): Matrix[F]
       = matrixScalarDiv(m, s)
   }
 
-
-  implicit class RightScalarMatrixOps[N : Numeric : ClassTag](s: N) {
+  implicit class RightScalarMatrixOps[N: Numeric : ClassTag](s: N) {
 
     def +(m: Matrix[N]): Matrix[N]
       = matrixScalarAdd(m, s)
