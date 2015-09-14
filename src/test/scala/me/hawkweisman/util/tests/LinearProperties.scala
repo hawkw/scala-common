@@ -40,9 +40,15 @@ extends WordSpec
         forAll (sameSize2Matrix) { case ((m, n)) ⇒
                 m + n shouldEqual n + m
         }
-
       }
     }
+    "multiplying matrices and scalars" should {
+      "obey the associative property of multiplication" in {
+        forAll { (m: Matrix[Int], r: Int, s: Int) ⇒
+          (r * s) * m shouldEqual r * (s * m) }
+      }
+    }
+
     "adding vectors" should {
       "obey the associative property of addition" in {
         forAll (sameSize3Vector) { case ((u, v, w)) ⇒
@@ -60,6 +66,21 @@ extends WordSpec
         forAll (sameSize2Vector) { case ((u, v)) ⇒
                 u * v shouldEqual v * u
         }
+      }
+    }
+    "adding vectors and scalars" should {
+      "obey the commutative property of addition" in {
+        forAll { (v: Vector[Int], s: Int) ⇒ v + s shouldEqual s + v }
+      }
+    }
+    "multiplying vectors and scalars" should {
+      "obey the associative property of multiplication" in {
+        forAll { (v: Vector[Int], s: Int, r: Int) ⇒
+          r * (s * v) shouldEqual (r * s) * v }
+      }
+      "obey the distributive property of multiplication" in {
+        forAll { (v: Vector[Int], s: Int, r: Int) ⇒
+          (r + s) * v shouldEqual (r * v) + (s * v) }
       }
     }
   }
