@@ -388,8 +388,8 @@ extends Linear {
 
   override def crossProduct[N : Numeric : ClassTag]
                            (a: Matrix[N], b: Matrix[N]): Matrix[N]
-    = { require ( a.length == b(0).length && a(0).length == b.length
-                , "Cannot take cross product of matrices of unequal size")
+    = { require( a.length == b(0).length
+               , "X-cardinality of matrix A must equal y-cardinality of B." )
         for (row ← a) yield for (col ← b transpose)
           yield row * col
       }
