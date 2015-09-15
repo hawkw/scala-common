@@ -5,6 +5,7 @@ import scala.language.postfixOps
 import scala.reflect.ClassTag
 import Numeric.Implicits._
 import Fractional.Implicits._
+import scala.math.{ cos, sin }
 
 
 /**
@@ -462,3 +463,34 @@ extends Linear {
 
 }
 
+trait TwoDTransforms
+extends Linear {
+
+  def rotationMatrix(theta: Double): Matrix[Double]
+    = Array( Array(cos(theta), sin(theta))
+           , Array(-sin(theta), cos(theta)))
+
+  def scalingMatrix(sx: Double, sy: Double): Matrix[Double]
+    = Array( Array(sx, 0 )
+           , Array(0,  sy) )
+
+  def translationMatrix(tx: Double, ty: Double): Vector[Double]
+    = Array(tx, ty)
+
+  implicit class Transformable(val v: Vector[Double]) {
+
+    def rotatedBy(degrees: Double): Vector[Double]
+      = ??? //rotationMatrix(degrees) * v // waiting on vector-matrix math
+
+    def scaledBy( sx: Double = 0
+                , sy: Double = 0): Vector[Double]
+      = ??? //scalingMatrix(sx, sy) * v // waiting on vector-matrix math
+
+    def translatedTo( tx: Double = 0
+                    , ty: Double = 0): Vector[Double]
+      = translationMatrix(tx, ty) + v
+
+  }
+
+
+}
