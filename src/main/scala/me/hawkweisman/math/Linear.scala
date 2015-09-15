@@ -272,7 +272,13 @@ trait Linear {
 /**
  * Sequential linear algebra implementation.
  *
- * In most cases, this will offer inferior performance to [[ParallelAlgebra]].
+ * This offers better performance than [[ParallelAlgebra]] for very small
+ * vectors/matricies (like 2 or 3 element vectors, or 2x2 or 2x3 matrices).
+ * However, the parallel implementation is much faster for very large vectors
+ * and matrices.
+ *
+ * A rule of thumb: use [[SequentialAlgebra]] if you're doing graphics, and
+ * [[ParallelAlgebra]] if you're doing physics.
  *
  * @author Hawk Weisman
  */
@@ -368,9 +374,15 @@ extends Linear {
  *
  * This uses Scala's
  * [[scala.collection.parallel.mutable.ParArray explicitly parallel arrays]] to
- * parallelize vector and matrix operations. In general, this will tend to
- * offer much better performance than [[SequentialAlgebra]], especially for
- * larger vectors and matrices.
+ * parallelize vector and matrix operations. This offers much slower
+ * performance than [[SequentialAlgebra]] for small vectors, due to the added
+ * cost of transforming the arrays into parallel arrays. However, this will
+ * likely offer much better performance than [[SequentialAlgebra]] for
+ * very large vectors and matrices.
+ *
+ * A general rule of thumb: use [[ParallelAlgebra]] if you're doing physics or
+ * stats, and [[SequentialAlgebra]] if you're doing 2D or 3D transformation
+ * matrices.
  *
  * @author Hawk Weisman
  */

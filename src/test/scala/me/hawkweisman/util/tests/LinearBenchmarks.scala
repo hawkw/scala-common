@@ -15,7 +15,7 @@ abstract class LinearBenchmark(val name: String)
 extends PerformanceTest.OfflineRegressionReport
   with Linear {
 
-  val sizes = Gen.range("size")(10,100,10)
+  val sizes = Gen.range("size")(10,1000,50)
 
   def intMatrix(n: Int): Matrix[Int]
     = Array.ofDim[Int](n * n)
