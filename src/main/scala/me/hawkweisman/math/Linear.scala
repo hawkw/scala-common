@@ -370,7 +370,7 @@ extends Linear {
 
   override def crossProduct[N : Numeric : ClassTag]
                            (a: Matrix[N], b: Matrix[N]): Matrix[N]
-    = { require( a.length == b.length && a(0).length == b(0).length
+    = { require ( a.length == b(0).length && a(0).length == b.length
                 , "Cannot take cross product of matrices of unequal size")
         for (row ← a) yield for (col ← b transpose)
           yield row * col
@@ -476,7 +476,7 @@ extends Linear {
 
   override def crossProduct[N : Numeric : ClassTag]
                            (a: Matrix[N], b: Matrix[N]): Matrix[N]
-    = { require ( a.length == b.length && a(0).length == b(0).length
+    = { require ( a.length == b(0).length && a(0).length == b.length
                 , "Cannot take cross product of matrices of unequal size" )
         (for ( row ← a.par )
           yield for ( col ← b.transpose )
