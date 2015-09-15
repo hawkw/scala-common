@@ -97,6 +97,12 @@ trait Linear {
 
     def ^*(s: N): Vector[N]
       = vectorScalarMul(v, s)
+
+    override lazy val toString: String
+      = "[" + (v mkString ", ") + "]"
+
+    def magnitude: Double
+      = Math.sqrt((v * v).asInstanceOf[Double])
   }
 
   /**
