@@ -15,7 +15,7 @@ abstract class LinearBenchmark(val name: String)
 extends PerformanceTest.OfflineRegressionReport
   with Linear {
 
-  val sizes = Gen.range("size")(10,1000,50)
+  val sizes = Gen.range("size")(10,100,10)
 
   def intMatrix(n: Int): Matrix[Int]
     = Array.ofDim[Int](n * n)
@@ -72,5 +72,3 @@ object SeqLinearBench
 object ParLinearBench
 extends LinearBenchmark("parallel")
   with ParallelAlgebra
-
-
