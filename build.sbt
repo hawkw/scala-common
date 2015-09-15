@@ -1,6 +1,10 @@
 import bintray.Plugin._
 import bintray.Keys._
 
+lazy val Benchmark = config("bench") extend Test
+
+configs(Benchmark)
+
 name          := "util"
 organization  := "me.hawkweisman"
 version       := "0.1.1" // the current release version
@@ -17,14 +21,15 @@ resolvers += "Sonatype OSS Snapshots" at
 libraryDependencies ++= Seq(
     "org.scalacheck"    %% "scalacheck" % "1.12.2"  % "test"
   , "org.scalatest"     %% "scalatest"  % "2.2.4"   % "test"
-  , "com.storm-enroute" %% "scalameter" % "0.6"     % "test"
+  , "com.storm-enroute" %% "scalameter" % "0.6"     % "bench"
 )
 
 testFrameworks += new TestFramework("org.scalameter.ScalaMeterFramework")
 
 // ScalaMeter demands these settings due to reasons
 logBuffered := false
-parallelExecution in Test := false
+parallelExecution in Benchmark := false
+inConfig(Benchmark)(Defaults.testSettings)
 
 bintraySettings ++ Seq(
     licenses += ("MIT",
