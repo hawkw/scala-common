@@ -2,30 +2,32 @@ sudo: false
 language: scala
 sbt_args: ++$TRAVIS_SCALA_VERSION -J-XX:ReservedCodeCacheSize=256M
 scala:
-- 2.12.0-M1
-- 2.11.7
-- 2.11.6
+  - 2.12.0-M1
+  - 2.11.7
+  - 2.11.6
 cache:
   directories:
   - $HOME/.ivy2/cache
   - $HOME/.sbt/boot/
 script:
-- sbt compile
-- sbt clean coverage test
-- find $HOME/.sbt -name "*.lock" | xargs rm
-- find $HOME/.ivy2 -name "ivydata-*.properties" | xargs rm
+  - sbt compile
+  - sbt clean coverage test
+  - find $HOME/.sbt -name "*.lock" | xargs rm
+  - find $HOME/.ivy2 -name "ivydata-*.properties" | xargs rm
 env:
   global:
   - secure: RqnPLSv01Yo5Jrer77IFaux6ZmYWbPaHYynToHBwm20ue549FP009H1eXf5QgjdB6xATSMN/5dHO+J7HQzlOh8wQpygzOBEHXrY8VxYonrGTHvU1qF02T1TYzfqbuf6zD4dzpTOBcTjGpE5SMZNocppetmz9r2R25dGNPu3NmSs=
   - secure: Bl8T+QdWKHQYTLWi4Cyu3ioA5JUPvMVKBGDDWqBSUwShwBfVyFi9Imv5MLtDJJK5jh8LswZOWZ7og9FwdtaL/bnSt6/F8moRItoSNTn1Bn6Il8+PlIeDcgBd9TCXOApYqNNG1zQGnp++CKduq5UMRHCS9PsoHkgyh12UGw2ZH7U=
   - secure: NVXCXQEVFsGt6nN/H45giy8NL3CQ38gBmjIZrLRzFQU4NXLgQWzuRl7N/JCpfN3d4wg/o6vjs85oRxQCUmDwIvHopBFefni1r5u9tKLt4oigNDa3F/Lhyfod3on57BhgZ7oDVww0b0llAS41jLYEMNgrY0FPXgqjXux4F3kqUBQ=
 after_success:
-- bash <(curl -s https://codecov.io/bash)
-- sbt coverageReport
-- sbt coverageAggregate
-- sbt codacyCoverage
-- |
-  test "${TRAVIS_PULL_REQUEST}" = 'false' && test "${TRAVIS_SCALA_VERSION}" = '2.11.7' && sh "$TRAVIS_BUILD_DIR/.travis/bintray-credentials.sh" && sbt 'set version := version.value + "+" + System.getenv("TRAVIS_BUILD_NUMBER")' publish
+  # Run the benchmarks here so that it's okay if they fail
+  - sbt bench:test
+  - bash <(curl -s https://codecov.io/bash)
+  - sbt coverageReport
+  - sbt coverageAggregate
+  - sbt codacyCoverage
+  - |
+    test "${TRAVIS_PULL_REQUEST}" = 'false' && test "${TRAVIS_SCALA_VERSION}" = '2.11.7' && sh "$TRAVIS_BUILD_DIR/.travis/bintray-credentials.sh" && sbt 'set version := version.value + "+" + System.getenv("TRAVIS_BUILD_NUMBER")' publish
 before_deploy:
   - sbt clean package
   - export RELEASE_JAR=$(ls target/scala-2.11/util_2.11*.jar)
