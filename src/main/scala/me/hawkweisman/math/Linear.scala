@@ -527,12 +527,12 @@ extends Linear {
 
   implicit class Transformable(val v: Vector[Double]) {
 
-    def rotatedBy(degrees: Double): Vector[Double]
-      = ??? //rotationMatrix(degrees) * v // waiting on vector-matrix math
+    def rotatedBy(degrees: Double): Matrix[Double]
+      = rotationMatrix(degrees) * v
 
     def scaledBy( sx: Double = 0
-                , sy: Double = 0): Vector[Double]
-      = ??? //scalingMatrix(sx, sy) * v // waiting on vector-matrix math
+                , sy: Double = 0): Matrix[Double]
+      = scalingMatrix(sx, sy) * v
 
     def translatedTo( tx: Double = 0
                     , ty: Double = 0): Vector[Double]
