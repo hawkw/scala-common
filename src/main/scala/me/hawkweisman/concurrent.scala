@@ -3,6 +3,7 @@ package me.hawkweisman
 import scala.concurrent.{ Promise
                         , Future
                         }
+import scala.language.implicitConversions
 import scala.util.{ Try
                   , Success
                   , Failure

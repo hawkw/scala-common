@@ -1,11 +1,12 @@
 package me.hawkweisman.math
 
-import scala.Function._
 import scala.language.postfixOps
+import scala.math.{ cos, sin }
 import scala.reflect.ClassTag
+import scala.Function._
+
 import Numeric.Implicits._
 import Fractional.Implicits._
-import scala.math.{ cos, sin }
 
 
 /**

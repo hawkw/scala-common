@@ -7,6 +7,8 @@ import auth.hash
 import org.scalatest.{Matchers, FlatSpec}
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
 
+import scala.language.postfixOps
+
 /**
  * Created by hawk on 3/12/15.
  */

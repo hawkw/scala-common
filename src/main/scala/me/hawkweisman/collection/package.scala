@@ -1,4 +1,7 @@
 package me.hawkweisman
+
+import scala.language.higherKinds
+
 /**
  * ==Collection==
  * Contains various utilities for working on collections and implementations
@@ -110,7 +113,7 @@ package object collection {
 
   implicit class Map2Able[A, M[X] <: TraversableOnce[X]](self: M[M[A]])
   {
-    def map2[B](f: (A) ⇒ B)
+    def map2[B](f: (A) ⇒ B): TraversableOnce[TraversableOnce[B]]
       = self map{ r: M[A] ⇒ r map f }
   }
 
