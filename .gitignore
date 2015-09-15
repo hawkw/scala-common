@@ -19,6 +19,9 @@ project/plugins/project/
 .scala_dependencies
 .worksheet
 
+# ScalaMeter performance test reports
+tmp/
+
 
 ### SublimeText ###
 # cache files for sublime text
