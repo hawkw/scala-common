@@ -20,7 +20,7 @@ extends FlatSpec
 //      math.normalizeAt(100.0)(ns).sum should be (100.0 +- 1e-5)
 //      }
 //    }
-  }
+//  }
   // This is ignored because floating point is
   // a terrible way to represent numbers
   ignore should "normalize any set of Floats at 1" in {
@@ -34,5 +34,5 @@ extends FlatSpec
 //      math.normalizeAt(100.0)(ns).sum should be (100.0 +- 1e-5)
 //      }
 //    }
-  }
+//  }
 }
