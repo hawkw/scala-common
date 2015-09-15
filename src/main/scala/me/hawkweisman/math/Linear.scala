@@ -103,8 +103,8 @@ trait Linear {
 
     def magnitude: Double
       = Math.sqrt((v * v).asInstanceOf[Double])
-  }
 
+  }
   /**
    * Provides additional operators for vectors
    * whose elements are [[Fractional]].
@@ -123,6 +123,10 @@ trait Linear {
 
     def /^(s: F): Vector[F]
       = vectorScalarDiv(v, s)
+
+    def angleTo(vPrime: Vector[F]): Double
+      = Math.cos( (v * vPrime).asInstanceOf[Double] /
+                  (v.magnitude * vPrime.magnitude) )
   }
 
   /**
