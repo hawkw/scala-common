@@ -150,9 +150,9 @@ extends WordSpec
          (m: Matrix[Int], s: Int) ⇒
             var o: Array[Array[Int]] = Array ofDim[Int](m.length, m(0).length)
 
-            for {i ← m.indices
-                 j ← m(0).indices
-            } {
+            for { i ← m.indices
+                  j ← m(0).indices }
+            {
               o(i)(j) = m(i)(j) - s
             }
             m ^- s shouldEqual o
@@ -163,14 +163,16 @@ extends WordSpec
       "provide the same result as an iterative algorithm" in {
         forAll ((singleIntMatrix, "m"), (arbitrary[Int], "s")) {
           (m: Matrix[Int], s: Int) ⇒
-            var o: Array[Array[Int]] = Array ofDim[Int](m.length, m(0).length)
+            whenever (m.length > 0 && m(0).length > 0) {
+              var o: Array[Array[Int]]
+              = Array.ofDim[Int](m.length, m(0).length)
 
-            for {i ← m.indices
-                 j ← m(0).indices
-            } {
-              o(i)(j) = m(i)(j) + s
-            }
-            m ^- s shouldEqual o
+              for {i ← m.indices
+                   j ← m(0).indices} {
+                o(i)(j) = m(i)(j) + s
+              }
+              m ^+ s shouldEqual o
+          }
         }
       }
     }
@@ -179,7 +181,8 @@ extends WordSpec
 
         forAll ((singleIntMatrix, "m"), (arbitrary[Int], "s")) {
           (m: Matrix[Int], s: Int) ⇒
-            var o: Array[Array[Int]] = Array ofDim[Int](m.length, m(0).length)
+            var o: Array[Array[Int]]
+              = Array ofDim[Int](m.length, m(0).length)
 
             for {i ← m.indices
                  j ← m(0).indices
@@ -193,7 +196,7 @@ extends WordSpec
     "adding vectors" should {
       "provide the same result as an iterative algorithm" in {
         forAll (sameSize2Vector) { case ((v: Vector[Int], u: Vector[Int])) ⇒
-          var w: Vector[Int] = Array ofDim[Int] v.length
+          var w: Vector[Int] = Array ofDim[Int](v.length)
 
           for { i ← v.indices
           } {
@@ -206,13 +209,15 @@ extends WordSpec
     "subtracting vectors" should {
       "provide the same result as an iterative algorithm" in {
         forAll (sameSize2Vector) { case ((v: Vector[Int], u: Vector[Int])) ⇒
-          var w: Vector[Int] = Array ofDim[Int] v.length
+          whenever (v.nonEmpty && u.nonEmpty) {
+            var w: Vector[Int] = Array ofDim[Int] v.length
 
-          for { i ← v.indices
-          } {
-            w(i) = v(i) - u(i)
+            for {i ← v.indices
+            } {
+              w(i) = v(i) - u(i)
+            }
+            v - u shouldEqual w
           }
-          u - v shouldEqual w
         }
       }
     }
@@ -220,7 +225,7 @@ extends WordSpec
       "provide the same result as an iterative algorithm" in {
         forAll ((singleIntVector, "v"), (arbitrary[Int], "s")) {
           (v: Vector[Int], s: Int) ⇒
-            var u: Vector[Int] = Array ofDim[Int] v.length
+            var u: Vector[Int] = Array ofDim[Int](v.length)
 
             for { i ← u.indices } {
               u(i) = v(i) - s
