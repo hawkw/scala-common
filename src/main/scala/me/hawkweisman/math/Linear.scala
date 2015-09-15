@@ -47,6 +47,9 @@ trait Linear {
   def vectorScalarDiv[N: Fractional: ClassTag](v: Vector[N], s: N): Vector[N]
   def vectorScalarMul[N: Numeric: ClassTag](v: Vector[N], s: N): Vector[N]
 
+  def vectorMatrixMul[N: Numeric: ClassTag]
+                     (v: Vector[N], m: Matrix[N]): Matrix[N]
+
   def dotProduct[N: Numeric: ClassTag](a: Vector[N], b: Vector[N]): N
 
   def matrixAdd[N: Numeric: ClassTag](a: Matrix[N], b: Matrix[N]): Matrix[N]
@@ -88,6 +91,9 @@ trait Linear {
 
     def *(that: Vector[N]): N
       = dotProduct(v, that)
+
+    def *(that: Matrix[N]): Matrix[N]
+      = vectorMatrixMul(v, that)
 
     def ^+(s: N): Vector[N]
       = vectorScalarAdd(v, s)
@@ -203,6 +209,9 @@ trait Linear {
 
     def *(that: Matrix[N]): Matrix[N]
       = crossProduct(m, that)
+
+    def *(that: Vector[N]): Matrix[N]
+     = vectorMatrixMul(that, m)
 
     def ^+(s: N): Matrix[N]
       = matrixScalarAdd(m, s)
@@ -331,6 +340,15 @@ extends Linear {
   override def vectorScalarDiv[N: Fractional: ClassTag]
                               (v: Vector[N], s: N): Vector[N]
     = v map (_ / s)
+
+  override def vectorMatrixMul[N: Numeric: ClassTag]
+                              (v: Vector[N], m: Matrix[N]): Matrix[N]
+    = { // currently, this is special cased because
+        // unevenly sized vectors isn't done yet
+        require(v.length == m(0).length)
+        m zip v map {  case ((row, s)) ⇒ row ^* s }
+
+      }
 
   override def matrixScalarAdd[N: Numeric: ClassTag]
                               (m: Matrix[N], s: N): Matrix[N]
@@ -482,6 +500,14 @@ extends Linear {
           yield for ( col ← b.transpose )
             yield row * col) toArray
       }
+
+  override def vectorMatrixMul[N: Numeric: ClassTag]
+                              (v: Vector[N], m: Matrix[N]): Matrix[N]
+    = { // currently, this is special cased because
+        // unevenly sized vectors isn't done yet
+        require(v.length == m(0).length)
+        m.par zip v.par map { case ((row, s)) ⇒ row ^* s } toArray
+    }
 
 }
 
