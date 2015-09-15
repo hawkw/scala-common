@@ -494,8 +494,8 @@ extends Linear {
 
   override def crossProduct[N : Numeric : ClassTag]
                            (a: Matrix[N], b: Matrix[N]): Matrix[N]
-    = { require ( a.length == b(0).length && a(0).length == b.length
-                , "Cannot take cross product of matrices of unequal size" )
+    = { require ( a.length == b(0).length
+                , "X-cardinality of matrix A must equal y-cardinality of B." )
         (for ( row ← a.par )
           yield for ( col ← b.transpose )
             yield row * col) toArray
@@ -540,7 +540,6 @@ extends Linear {
 
   }
 
-
 }
 
 trait SurfaceNormals
@@ -550,9 +549,8 @@ extends Linear {
                                          , p3: Vector[N]): Vector[N]
     = { val u = p2 - p1
         val v = p3 - p1
-        Array[N](
-            (u(1) * v(2)) - (u(2) * v(1))
-          , (u(2) * v(0)) - (u(0) * v(2))
-          , (u(0) * v(1)) - (u(1) * v(0)) )
+        Array[N]( (u(1) * v(2)) - (u(2) * v(1))
+                , (u(2) * v(0)) - (u(0) * v(2))
+                , (u(0) * v(1)) - (u(1) * v(0)) )
       }
 }
