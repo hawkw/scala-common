@@ -7,3 +7,10 @@
 [ ![Download](https://api.bintray.com/packages/hawkw/maven/util/images/download.svg) ](https://bintray.com/hawkw/maven/util/_latestVersion)
 
 General-purpose Scala code bits. Think of this as being like Apache Commons but little and in Scala.
+
+### Building & Testing:
+
+ + `$ sbt package` builds the release library Jar file
+ + `$ sbt doc` generates the ScalaDoc API documentation
+ + `$ sbt test` runs the unit test suite
+ + `$ sbt bench:test` runs the ScalaMeter performance tests (currently just for `Linear`); be advised that these can  take Some Time to run.
