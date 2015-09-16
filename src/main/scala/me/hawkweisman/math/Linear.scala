@@ -1,5 +1,6 @@
 package me.hawkweisman.math
 
+import scala.collection.parallel.mutable.ParArray
 import scala.language.postfixOps
 import scala.math.{ cos, sin }
 import scala.reflect.ClassTag
@@ -510,6 +511,101 @@ extends Linear {
         m.par zip v.par map { case ((row, s)) ⇒ row ^* s } toArray
     }
 
+}
+
+trait AlwaysParallelAlgebra
+extends Linear {
+  override type Vector[N] = ParArray[N]
+  override type Matrix[N] = ParArray[Vector[N]]
+
+  @inline
+  private[this] def zap[N: Numeric : ClassTag]
+                       (a: Matrix[N], b: Matrix[N])
+                       (f: (N, N) ⇒ N): Matrix[N]
+    = a zip b map { case ((r1: Vector[N], r2: Vector[N])) ⇒
+      r1 zip r2 map tupled (f)
+    }
+
+  override def vectorAdd[N : Numeric : ClassTag]
+                        (a: Vector[N], b: Vector[N]): Vector[N]
+    = { require(a.length == b.length, "Cannot add vectors of unequal length" )
+        a zip b map tupled(_ + _)
+      }
+
+  override def vectorSub[N: Numeric: ClassTag]
+                        (a: Vector[N], b: Vector[N]): Vector[N]
+    = { require( a.length == b.length
+                , "Cannot subtract of vectors of unequal length" )
+        a zip b map tupled(_ - _)
+      }
+
+  override def vectorScalarAdd[N: Numeric: ClassTag]
+                              (v: Vector[N], s: N): Vector[N]
+    = v map (_ + s)
+
+  override def vectorScalarSub[N: Numeric: ClassTag]
+                              (v: Vector[N], s: N): Vector[N]
+    = v map (_ - s)
+
+  override def vectorScalarMul[N: Numeric: ClassTag]
+                              (v: Vector[N], s: N): Vector[N]
+    = v map (_ * s)
+
+  override def vectorScalarDiv[N: Fractional: ClassTag]
+                              (v: Vector[N], s: N): Vector[N]
+    = v map (_ / s)
+
+  override def vectorMatrixMul[N: Numeric: ClassTag]
+                              (v: Vector[N], m: Matrix[N]): Matrix[N]
+    = { // currently, this is special cased because
+        // unevenly sized vectors isn't done yet
+        require(v.length == m(0).length)
+        m zip v map {  case ((row, s)) ⇒ row ^* s }
+      }
+
+  override def matrixScalarAdd[N: Numeric: ClassTag]
+                              (m: Matrix[N], s: N): Matrix[N]
+    = m map (_ map  (_ + s) )
+
+  override def matrixScalarSub[N: Numeric: ClassTag]
+                              (m: Matrix[N], s: N): Matrix[N]
+    = m map (_ map  (_ - s) )
+
+  override def matrixScalarMul[N: Numeric: ClassTag]
+                              (m: Matrix[N], s: N): Matrix[N]
+    = m map (_ map  (_ * s) )
+
+  override def matrixScalarDiv[N: Fractional: ClassTag]
+                              (m: Matrix[N], s: N): Matrix[N]
+    = m map (_ map  (_ / s) )
+
+  override def dotProduct[N : Numeric : ClassTag]
+                         (a: Vector[N], b: Vector[N]): N
+    = { require( a.length == b.length
+      , "Cannot take dot product of vectors of unequal length" )
+      a zip b map tupled (_ * _) sum
+    }
+
+  override def matrixAdd[N : Numeric : ClassTag]
+                        (a: Matrix[N], b: Matrix[N]): Matrix[N]
+    = { require(a.length == b.length, "Cannot add matrices of unequal size")
+      zap(a, b)(_ + _)
+    }
+
+  override def matrixSub[N : Numeric : ClassTag]
+                        (a: Matrix[N], b: Matrix[N]): Matrix[N]
+    = { require( a.length == b.length && a(0).length == b(0).length
+      , "Cannot subtract matrices of unequal size" )
+      zap(a, b)(_ - _)
+    }
+
+  override def crossProduct[N : Numeric : ClassTag]
+                           (a: Matrix[N], b: Matrix[N]): Matrix[N]
+    = { require( a.length == b.head.length
+      , "X-cardinality of matrix A must equal y-cardinality of B." )
+      for (row ← a) yield for (col ← b transpose)
+        yield row * col
+    }
 }
 
 trait TwoDTransforms
