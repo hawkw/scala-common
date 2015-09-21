@@ -1,6 +1,6 @@
 package me.hawkweisman.util.tests
 
-import me.hawkweisman.math.Linear
+import me.hawkweisman.math.linear.Linear
 import org.scalacheck.Arbitrary._
 import org.scalacheck.Gen
 import org.scalacheck.Gen.{choose,listOfN}

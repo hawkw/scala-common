@@ -1,6 +1,6 @@
 package me.hawkweisman.util.tests
 
-import me.hawkweisman.math.{ SequentialAlgebra, ParallelAlgebra, Linear}
+import me.hawkweisman.math.linear.{Linear, SequentialAlgebra, ParallelAlgebra}
 import org.scalameter.api._
 
 import scala.util.Random

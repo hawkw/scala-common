@@ -1,38 +1,45 @@
 import bintray.Plugin._
 import bintray.Keys._
+import sbt.Keys._
 
 lazy val Benchmark = config("bench") extend Test
 
-name          := "util"
-organization  := "me.hawkweisman"
-version       := "0.1.1" // the current release version
-scalaVersion  := "2.11.7"
+lazy val scalaMeter = new TestFramework("org.scalameter.ScalaMeterFramework")
 
-sbtPlugin     := false // if we don't set this, Bintray will think
-                       // we're releasing an SBT plugin
+lazy val commonSettings = Seq(
+   organization    := "me.hawkweisman"
+ , version         := "0.1.1" // the current release version
+ , scalaVersion    := "2.11.7"
+ , autoAPIMappings := true // link Scala standard lib in docs
+ , sbtPlugin       := false // if we don't set this, Bintray will think
+                            // we're releasing an SBT plugin
+ , resolvers += "Sonatype OSS Snapshots" at // ScalaMeter is on SonaType
+    "https://oss.sonatype.org/content/repositories/snapshots"
+ , libraryDependencies ++= Seq(
+      "org.scalacheck"    %% "scalacheck" % "1.12.2"  % "test"
+    , "org.scalatest"     %% "scalatest"  % "2.2.4"   % "test"
+    , "com.storm-enroute" %% "scalameter" % "0.6"     % "bench"
+    )
 
-autoAPIMappings := true // link Scala standard lib in docs
-
-// ScalaMeter is on SonaType
-resolvers += "Sonatype OSS Snapshots" at
-  "https://oss.sonatype.org/content/repositories/snapshots"
-
-libraryDependencies ++= Seq(
-  "org.scalacheck"    %% "scalacheck" % "1.12.2"  % "test"
-, "org.scalatest"     %% "scalatest"  % "2.2.4"   % "test"
-, "com.storm-enroute" %% "scalameter" % "0.6"     % "bench"
 )
 
-//-- ScalaMeter performance testing settings ----------------------------------
-configs(Benchmark)
-val scalaMeter = new TestFramework("org.scalameter.ScalaMeterFramework")
-testFrameworks in Benchmark += scalaMeter
-
-logBuffered in Benchmark := false       // ScalaMeter demands these settings
-parallelExecution in Benchmark := false // due to reasons
-
-inConfig(Benchmark)(Defaults.testSettings)
-testOptions in Benchmark += Tests.Argument(scalaMeter, "-silent")
+lazy val root = Project(
+     "core"
+   , file(".")
+   , settings = Defaults.coreDefaultSettings ++
+                              commonSettings ++
+                              Seq(name := "util")
+  ) configs (
+    Benchmark
+  ) settings (
+    //-- ScalaMeter performance testing settings -----------------------------
+    inConfig(Benchmark)(Defaults.testSettings ++ Seq(
+        testOptions += Tests.Argument(scalaMeter, "-silent")
+      , testFrameworks in Benchmark += scalaMeter
+      , logBuffered in Benchmark := false       // ScalaMeter demands these settings
+      , parallelExecution in Benchmark := false // due to reasons
+    ))
+  )
 
 //-- Bintray deployment settings ----------------------------------------------
 bintraySettings ++ Seq(
