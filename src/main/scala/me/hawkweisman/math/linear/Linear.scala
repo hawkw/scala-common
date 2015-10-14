@@ -423,13 +423,14 @@ trait TwoDTransforms
 
 trait SurfaceNormals
   extends Linear {
+
   def surfaceNormal[N: Numeric: ClassTag]( p1: Vector[N]
-                                           , p2: Vector[N]
-                                           , p3: Vector[N]): Vector[N]
-  = { val u = p2 - p1
-      val v = p3 - p1
-      Array[N]( (u(1) * v(2)) - (u(2) * v(1))
-                  , (u(2) * v(0)) - (u(0) * v(2))
-                  , (u(0) * v(1)) - (u(1) * v(0)) )
-    }
+                                         , p2: Vector[N]
+                                         , p3: Vector[N]): Vector[N]
+    = { val u = p2 - p1
+        val v = p3 - p1
+        Array[N]( (u(1) * v(2)) - (u(2) * v(1))
+                , (u(2) * v(0)) - (u(0) * v(2))
+                , (u(0) * v(1)) - (u(1) * v(0)) )
+      }
 }
