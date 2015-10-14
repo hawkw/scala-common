@@ -149,13 +149,13 @@ trait Linear {
   implicit class RightScalarVectorOps[N : Numeric : ClassTag](s: N) {
 
     def +^(v: Vector[N]): Vector[N]
-    = vectorScalarAdd(v, s)
+      = vectorScalarAdd(v, s)
 
     def -^(v: Vector[N]): Vector[N]
-    = vectorScalarSub(v, s)
+      = vectorScalarSub(v, s)
 
     def *^(v: Vector[N]): Vector[N]
-    = vectorScalarMul(v, s)
+      = vectorScalarMul(v, s)
   }
 
   /**
@@ -394,28 +394,28 @@ trait TwoDTransforms
   extends Linear {
 
   def rotationMatrix(theta: Double): Matrix[Double]
-  = Array( Array(cos(theta), sin(theta))
-    , Array(-sin(theta), cos(theta)))
+    = Array( Array(cos(theta), sin(theta))
+           , Array(-sin(theta), cos(theta)) )
 
   def scalingMatrix(sx: Double, sy: Double): Matrix[Double]
-  = Array( Array(sx, 0 )
-    , Array(0,  sy) )
+    = Array( Array(sx, 0 )
+           , Array(0,  sy) )
 
   def translationMatrix(tx: Double, ty: Double): Vector[Double]
-  = Array(tx, ty)
+    = Array(tx, ty)
 
   implicit class Transformable(val v: Vector[Double]) {
 
     def rotatedBy(degrees: Double): Matrix[Double]
-    = rotationMatrix(degrees) * v
+      = rotationMatrix(degrees) * v
 
     def scaledBy( sx: Double = 0
-                  , sy: Double = 0): Matrix[Double]
-    = scalingMatrix(sx, sy) * v
+                , sy: Double = 0): Matrix[Double]
+      = scalingMatrix(sx, sy) * v
 
     def translatedTo( tx: Double = 0
-                      , ty: Double = 0): Vector[Double]
-    = translationMatrix(tx, ty) + v
+                    , ty: Double = 0): Vector[Double]
+      = translationMatrix(tx, ty) + v
 
   }
 
