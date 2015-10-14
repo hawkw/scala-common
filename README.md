@@ -1,10 +1,10 @@
 # scala-common
-[![Build Status](https://img.shields.io/travis/hawkw/scala-common.svg?branch=master)](https://travis-ci.org/hawkw/scala-common)
-[![Codacy Badge](https://www.codacy.com/project/badge/7ba53eb29ba04e88b2126eefc716cb87)](https://www.codacy.com/app/hawk/scala-common)
-[![Coverage](https://img.shields.io/codecov/c/github/hawkw/scala-common.svg?branch=master)](https://github.com/hawkw/scala-common/releases)
-[![License](http://img.shields.io/:license-mit-blue.svg)](http://doge.mit-license.org)
-[![GitHub release](https://img.shields.io/github/release/hawkw/scala-common.svg)](https://github.com/hawkw/scala-common/releases)
-[ ![Download](https://api.bintray.com/packages/hawkw/maven/util/images/download.svg) ](https://bintray.com/hawkw/maven/util/_latestVersion)
+[![Build Status](https://img.shields.io/travis/hawkw/scala-common/master.svg?style=flat-square)](https://travis-ci.org/hawkw/scala-common)
+[![Codacy Badge](https://img.shields.io/codacy/7ba53eb29ba04e88b2126eefc716cb87.svg?style=flat-square)](https://www.codacy.com/app/hawk/scala-common)
+[![Coverage](https://img.shields.io/codecov/c/github/hawkw/scala-common/master.svg?style=flat-square)](https://github.com/hawkw/scala-common/releases)
+[![License](http://img.shields.io/:license-mit-blue.svg?style=flat-square)](http://doge.mit-license.org)
+[![GitHub release](https://img.shields.io/github/release/hawkw/scala-common.svg?style=flat-square)](https://github.com/hawkw/scala-common/releases)
+[![Bintray](https://img.shields.io/bintray/v/hawkw/maven/util.svg?style=flat-square)](https://bintray.com/hawkw/maven/util/_latestVersion)
 
 General-purpose Scala code bits. Think of this as being like Apache Commons but little and in Scala.
 
