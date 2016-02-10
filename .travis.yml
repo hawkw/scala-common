@@ -37,11 +37,11 @@ cache:
 script:
   - sbt compile
   - | # if this is not the benchmark build, run the unit tests
-      if [$BENCH = false]; then
+      if [ $BENCH = "false" ]; then
         sbt clean coverage test
       fi
   - | # if this build is the benchmark build, run the benchmarks instead
-      if [$BENCH = true]; then
+      if [ $BENCH = "true" ]; then
         sbt bench:test
       fi
   - find $HOME/.sbt -name "*.lock" | xargs rm
@@ -49,7 +49,7 @@ script:
 
 after_success:
   - |
-      if [$BENCH = false]; then
+      if [ $BENCH = "false" ]; then
         bash <(curl -s https://codecov.io/bash) &&
         sbt coverageReport &&
         sbt coverageAggregate &&
