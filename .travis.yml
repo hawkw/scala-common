@@ -7,13 +7,21 @@ scala:
   - 2.10.5
 env:
   global:
+    # this tells ScalaTest not to use certain ANSI escapes
     - TERM=dumb
+    # secure keys
+    - secure: RqnPLSv01Yo5Jrer77IFaux6ZmYWbPaHYynToHBwm20ue549FP009H1eXf5QgjdB6xATSMN/5dHO+J7HQzlOh8wQpygzOBEHXrY8VxYonrGTHvU1qF02T1TYzfqbuf6zD4dzpTOBcTjGpE5SMZNocppetmz9r2R25dGNPu3NmSs=
+    - secure: Bl8T+QdWKHQYTLWi4Cyu3ioA5JUPvMVKBGDDWqBSUwShwBfVyFi9Imv5MLtDJJK5jh8LswZOWZ7og9FwdtaL/bnSt6/F8moRItoSNTn1Bn6Il8+PlIeDcgBd9TCXOApYqNNG1zQGnp++CKduq5UMRHCS9PsoHkgyh12UGw2ZH7U=
+    - secure: NVXCXQEVFsGt6nN/H45giy8NL3CQ38gBmjIZrLRzFQU4NXLgQWzuRl7N/JCpfN3d4wg/o6vjs85oRxQCUmDwIvHopBFefni1r5u9tKLt4oigNDa3F/Lhyfod3on57BhgZ7oDVww0b0llAS41jLYEMNgrY0FPXgqjXux4F3kqUBQ=
   matrix:
+    # whether or not to run benchmarks
     - BENCH=false
     - BENCH=true
 matrix:
   fast_finish: true
   allow_failures:
+    # We allow builds to fail if they are running on non-standard Scala
+    # versions, or if the failure was due to benchmarks rather than unit tests.
     - scala: 2.12.0-M3
     - scala: 2.10.5
     - env: BENCH=true
@@ -38,11 +46,7 @@ script:
       fi
   - find $HOME/.sbt -name "*.lock" | xargs rm
   - find $HOME/.ivy2 -name "ivydata-*.properties" | xargs rm
-env:
-  global:
-  - secure: RqnPLSv01Yo5Jrer77IFaux6ZmYWbPaHYynToHBwm20ue549FP009H1eXf5QgjdB6xATSMN/5dHO+J7HQzlOh8wQpygzOBEHXrY8VxYonrGTHvU1qF02T1TYzfqbuf6zD4dzpTOBcTjGpE5SMZNocppetmz9r2R25dGNPu3NmSs=
-  - secure: Bl8T+QdWKHQYTLWi4Cyu3ioA5JUPvMVKBGDDWqBSUwShwBfVyFi9Imv5MLtDJJK5jh8LswZOWZ7og9FwdtaL/bnSt6/F8moRItoSNTn1Bn6Il8+PlIeDcgBd9TCXOApYqNNG1zQGnp++CKduq5UMRHCS9PsoHkgyh12UGw2ZH7U=
-  - secure: NVXCXQEVFsGt6nN/H45giy8NL3CQ38gBmjIZrLRzFQU4NXLgQWzuRl7N/JCpfN3d4wg/o6vjs85oRxQCUmDwIvHopBFefni1r5u9tKLt4oigNDa3F/Lhyfod3on57BhgZ7oDVww0b0llAS41jLYEMNgrY0FPXgqjXux4F3kqUBQ=
+
 after_success:
   - |
       if [$BENCH = false]; then
