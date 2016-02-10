@@ -4,7 +4,7 @@ import java.io.{ File, FileWriter, PrintWriter }
 
 import me.hawkweisman.io.DSV.ToDSV
 
-import scala.language.reflectiveCalls
+import scala.language.{ postfixOps, reflectiveCalls }
 import scala.util.Try
 
 /** ==IO==

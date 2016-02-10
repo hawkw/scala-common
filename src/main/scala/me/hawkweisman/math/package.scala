@@ -1,7 +1,6 @@
 package me.hawkweisman
 
 import scala.annotation.tailrec
-import scala.math.abs
 import scala.math.Fractional.Implicits._
 
 /**

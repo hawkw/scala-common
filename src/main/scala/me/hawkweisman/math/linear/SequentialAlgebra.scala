@@ -1,12 +1,11 @@
 package me.hawkweisman.math
 package linear
 
+import scala.Fractional.Implicits._
 import scala.Function._
-import scala.reflect.ClassTag
+import scala.Numeric.Implicits._
 import scala.language.postfixOps
-
-import Numeric.Implicits._
-import Fractional.Implicits._
+import scala.reflect.ClassTag
 
 /**
  * Sequential linear algebra implementation.

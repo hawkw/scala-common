@@ -1,9 +1,9 @@
 package me.hawkweisman.math.linear
 
-import scala.reflect.ClassTag
+import java.lang.Math.{ sin, cos }
 
-import Math.{cos, sin}
-import Numeric.Implicits._
+import scala.Numeric.Implicits._
+import scala.reflect.ClassTag
 
 /**
  * ==Linear==
@@ -77,7 +77,7 @@ trait Linear {
    * @param ev2 evidence that the elements of the array have [[ClassTag]]s
    * @tparam N the type of elements in the array.
    */
-  implicit class VectorOps[N: Numeric : ClassTag](v: Vector[N]) {
+  implicit class VectorOps[N: Numeric : ClassTag](val v: Vector[N]) {
     require(v.length > 0, "Vectors must have 1 or more elements")
 
     def +(that: Vector[N]): Vector[N]

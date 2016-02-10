@@ -1,10 +1,7 @@
 package me.hawkweisman
 package collection
 
-import scala.annotation.tailrec
-import scala.collection.{ DefaultMap
-                        , AbstractMap
-                        }
+import scala.collection.{ AbstractMap, DefaultMap }
 
 trait ForkTable[K,V]
 extends AbstractMap[K,V]

@@ -1,7 +1,6 @@
 package me.hawkweisman.util
 
-import java.security.MessageDigest
-import java.security.NoSuchAlgorithmException
+import java.security.{ MessageDigest, NoSuchAlgorithmException }
 
 import scala.language.postfixOps
 

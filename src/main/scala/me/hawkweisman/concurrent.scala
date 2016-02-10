@@ -1,13 +1,8 @@
 package me.hawkweisman
 
-import scala.concurrent.{ Promise
-                        , Future
-                        }
+import scala.concurrent.{ Future, Promise }
 import scala.language.implicitConversions
-import scala.util.{ Try
-                  , Success
-                  , Failure
-                  }
+import scala.util.Try
 
 /**
  * ==Concurrent==

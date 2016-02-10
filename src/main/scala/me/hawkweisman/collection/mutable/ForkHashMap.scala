@@ -4,8 +4,6 @@ package collection.mutable
 import me.hawkweisman.collection.ForkTable
 
 import scala.annotation.tailrec
-import scala.collection.mutable
-import scala.collection
 
 /**
  * Created by hawk on 6/29/15.

@@ -1,12 +1,11 @@
 package me.hawkweisman.math
 package linear
 
+import scala.Fractional.Implicits._
 import scala.Function._
+import scala.Numeric.Implicits._
+import scala.language.postfixOps
 import scala.reflect.ClassTag
-import scala.collection.parallel.mutable.ParArray
-
-import Numeric.Implicits._
-import Fractional.Implicits._
 
 /**
  * Parallel linear algebra implementation.
