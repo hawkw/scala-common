@@ -6,7 +6,7 @@ lazy val Benchmark = config("bench") extend Test
 
 lazy val scalaMeter = new TestFramework("org.scalameter.ScalaMeterFramework")
 
-lazy val scalatestVersion = "3.0.0-M15Add "
+lazy val scalatestVersion = "3.0.0-M15"
 
 lazy val commonSettings = Seq(
    organization    := "me.hawkweisman"
