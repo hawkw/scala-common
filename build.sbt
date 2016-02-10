@@ -10,7 +10,7 @@ lazy val scalatestVersion = "3.0.0-M15"
 
 lazy val commonSettings = Seq(
    organization    := "me.hawkweisman"
- , version         := "0.1.1" // the current release version
+ , version         := "0.1.3" // the current release version
  , scalaVersion    := "2.11.7"
  , autoAPIMappings := true // link Scala standard lib in docs
  , sbtPlugin       := false // if we don't set this, Bintray will think
