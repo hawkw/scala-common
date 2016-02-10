@@ -1,22 +1,26 @@
 sudo: false
 language: scala
 sbt_args: ++$TRAVIS_SCALA_VERSION -J-XX:ReservedCodeCacheSize=256M
-scala:
-  - 2.12.0-M3
-  - 2.11.7
-  - 2.10.5
 matrix:
+  scala:
+    - 2.12.0-M3
+    - 2.11.7
+    - 2.10.5
+  env:
+    - BENCH=false
+    - BENCH=true
   fast_finish: true
   allow_failures:
     - scala: 2.12.0-M3
     - scala: 2.10.5
+    - env: BENCH=true
 cache:
   directories:
   - $HOME/.ivy2/cache
   - $HOME/.sbt/boot/
 script:
   - sbt compile
-  - sbt clean coverage test
+  - test "${BENCH}" = 'false' && sbt clean coverage test
   - find $HOME/.sbt -name "*.lock" | xargs rm
   - find $HOME/.ivy2 -name "ivydata-*.properties" | xargs rm
 env:
@@ -26,13 +30,13 @@ env:
   - secure: NVXCXQEVFsGt6nN/H45giy8NL3CQ38gBmjIZrLRzFQU4NXLgQWzuRl7N/JCpfN3d4wg/o6vjs85oRxQCUmDwIvHopBFefni1r5u9tKLt4oigNDa3F/Lhyfod3on57BhgZ7oDVww0b0llAS41jLYEMNgrY0FPXgqjXux4F3kqUBQ=
 after_success:
   # Run the benchmarks here so that it's okay if they fail
-  - sbt bench:test
-  - bash <(curl -s https://codecov.io/bash)
-  - sbt coverageReport
-  - sbt coverageAggregate
-  - sbt codacyCoverage
+  - test "${BENCH}" = 'true' && sbt bench:test
+  - test "${BENCH}" = 'false' && bash <(curl -s https://codecov.io/bash)
+  - test "${BENCH}" = 'false' && sbt coverageReport
+  - test "${BENCH}" = 'false' && sbt coverageAggregate
+  - test "${BENCH}" = 'false' && sbt codacyCoverage
   - |
-    test "${TRAVIS_PULL_REQUEST}" = 'false' && test "${TRAVIS_SCALA_VERSION}" = '2.11.7' && sh "$TRAVIS_BUILD_DIR/.travis/bintray-credentials.sh" && sbt 'set version := version.value + "+" + System.getenv("TRAVIS_BUILD_NUMBER")' publish
+    test "${TRAVIS_PULL_REQUEST}" = 'false' && test "${BENCH}" = 'false' && test "${TRAVIS_SCALA_VERSION}" = '2.11.7' && sh "$TRAVIS_BUILD_DIR/.travis/bintray-credentials.sh" && sbt 'set version := version.value + "+" + System.getenv("TRAVIS_BUILD_NUMBER")' publish
 before_deploy:
   - sbt clean package
   - export RELEASE_JAR=$(ls target/scala-2.11/util_2.11*.jar)
