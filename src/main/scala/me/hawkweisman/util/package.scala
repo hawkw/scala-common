@@ -11,6 +11,7 @@ import scala.util.{ Try
                   , Success
                   , Failure
                   }
+import io.using
 
 /**
  * ==Utilities==
@@ -116,12 +117,15 @@ package object util {
    * val e = new Exception("A message")
    * val s: String = e.stackTraceString
    * }}}
+    *
    * Created by hawk on 6/22/15.
    */
-  implicit class RichException(val e: Throwable) {
-    lazy val stackTraceString: String
-      = { val sw = new StringWriter
-          e printStackTrace new PrintWriter(sw)
+  implicit class RichException(val e: Throwable)
+  extends AnyVal {
+
+    def stackTraceString: String
+      = using(new StringWriter()){ sw =>
+          using(new PrintWriter(sw)){ e printStackTrace _ }
           sw toString
         }
   }
@@ -142,7 +146,7 @@ package object util {
     * }}}
   */
   implicit class EscapableString(val s: String)
-    extends AnyVal {
+  extends AnyVal {
 
     /**
       * Get the escaped representation of a string.
@@ -150,9 +154,9 @@ package object util {
       * @return the escaped representation of the string
       */
     def escaped: String
-    = { import scala.reflect.runtime.universe._
-      Literal(Constant(s)) toString
-    }
+      = { import scala.reflect.runtime.universe._
+        Literal(Constant(s)) toString
+      }
   }
 
 }
