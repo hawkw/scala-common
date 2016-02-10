@@ -15,11 +15,11 @@ object DSV {
 
     def toDSVLine(delim: String = ","): String
       = p.productIterator map {
-          case Some(thing) => thing
-          case None => ""
+          case Some(thing)    => thing
+          case None           => ""
           case string: String => string escaped
-          case value => value
-        } mkString delim + "\n"
+          case value: Any     => value
+        } mkString delim
 
     def toCSVLine: String = toDSVLine(delim = ",")
   }
