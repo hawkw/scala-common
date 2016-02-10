@@ -2,6 +2,8 @@ package me.hawkweisman
 
 import java.io.{ File, FileWriter, PrintWriter }
 
+import me.hawkweisman.io.DSV.ToDSV
+
 import scala.language.reflectiveCalls
 import scala.util.Try
 
@@ -54,6 +56,12 @@ package object io {
       */
     @inline def writeCSVLine(line: String*): Try[Unit]
       = writeDSVLine(delim = ",")(line:_*)
+
+    def writeDSV(delim: String = ",")(obj: ToDSV): Try[Unit]
+      = append( obj toDSVLine delim )
+
+    def writeCSV(obj: ToDSV): Try[Unit]
+      = append( obj toCSVLine )
   }
 
   implicit class RichFile(val f: File)
@@ -72,6 +80,5 @@ package object io {
     override def append(s: String): Try[Unit]  = f append s
     override def write(s: String): Try[Unit] = f write s
   }
-
 
 }

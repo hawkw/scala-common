@@ -70,7 +70,8 @@ package object util {
    *
    * }}}
    */
-  implicit class TryWithFold[T](val t: Try[T]) {
+  implicit class TryWithFold[T](val t: Try[T])
+  extends AnyVal {
     /**
      * Applies `fa` if this is a `Failure` or `fb` if this is a `Success`.
      * If `fb` is initially applied and throws an exception,
@@ -123,6 +124,35 @@ package object util {
           e printStackTrace new PrintWriter(sw)
           sw toString
         }
+  }
+
+  /**
+    * Enhances Strings with a method for getting the escaped representation
+    * of that String.
+    *
+    * This works by using reflection to represent the string as a constantz.
+    * Thus, it will contain all escape sequences understood by the Scala
+    * compiler.
+    *
+    * @param s a String
+    * @example {{{
+    * import me.hawkweisman.util.EscapableString
+    * val s = "\nThis\tString\nContains\n\n Escapes"
+    * assert(s.escaped == "\"\\nThis\\tString\\nContains\\n\\n Escapes\"")
+    * }}}
+  */
+  implicit class EscapableString(val s: String)
+    extends AnyVal {
+
+    /**
+      * Get the escaped representation of a string.
+      *
+      * @return the escaped representation of the string
+      */
+    def escaped: String
+    = { import scala.reflect.runtime.universe._
+      Literal(Constant(s)) toString
+    }
   }
 
 }
