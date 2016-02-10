@@ -28,8 +28,14 @@ cache:
   - $HOME/.sbt/boot/
 script:
   - sbt compile
-  - if [$BENCH = false]; then sbt clean coverage test fi
-  - if [$BENCH = true]; then sbt bench:test fi
+  - | # if this is not the benchmark build, run the unit tests
+      if [$BENCH = false]; then
+        sbt clean coverage test
+      fi
+  - | # if this build is the benchmark build, run the benchmarks instead
+      if [$BENCH = true]; then
+        sbt bench:test
+      fi
   - find $HOME/.sbt -name "*.lock" | xargs rm
   - find $HOME/.ivy2 -name "ivydata-*.properties" | xargs rm
 env:
