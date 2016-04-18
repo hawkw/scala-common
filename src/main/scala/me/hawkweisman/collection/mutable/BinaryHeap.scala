@@ -59,7 +59,7 @@ extends AbstractMap[P, V]
           heap update (i, newPair)
 
           if (i > 0 && newPair < heap((i - 1) / 2)) bubbleUp(i)
-          else bubbleDown(i)
+//          else bubbleDown(i)
         case None =>
           throw new IllegalArgumentException( "Cannot update priority " +
                                              s"$priority as it is not present")
@@ -77,5 +77,5 @@ extends AbstractMap[P, V]
     }
   }
 
-  @tailrec private[this] def bubbleDown(i: Int): Unit = ???
+//  @tailrec private[this] def bubbleDown(i: Int): Unit = ???
 }
