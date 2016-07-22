@@ -26,6 +26,15 @@ lazy val commonSettings = Seq(
 
 )
 
+enablePlugins(VersionEyePlugin)
+
+// VersionEyePlugin.projectSettings
+existingProjectId in versioneye := "57924291b7463b0037915d38"
+baseUrl in versioneye := "https://www.versioneye.com"
+apiPath in versioneye := "/api/v2"
+publishCrossVersion in versioneye := true
+
+
 lazy val root = Project(
      "core"
    , file(".")
