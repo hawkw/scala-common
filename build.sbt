@@ -6,7 +6,7 @@ lazy val Benchmark = config("bench") extend Test
 
 lazy val scalaMeter = new TestFramework("org.scalameter.ScalaMeterFramework")
 
-lazy val scalatestVersion = "3.0.0-RC14"
+lazy val scalatestVersion = "3.0.0-RC4"
 
 // NOTE: we are locked in with this version of ScalaCheck, as newer versions
 //       break compatibility with ScalaTest.
