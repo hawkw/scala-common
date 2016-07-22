@@ -8,6 +8,16 @@ lazy val scalaMeter = new TestFramework("org.scalameter.ScalaMeterFramework")
 
 lazy val scalatestVersion = "3.0.0-RC14"
 
+// NOTE: we are locked in with this version of ScalaCheck, as newer versions
+//       break compatibility with ScalaTest.
+//       Refer to https://github.com/rickynils/scalacheck/issues/217 for more
+//       information on this issue.
+lazy val scalacheckVersion = "1.12.1"
+//       I really wish this weren't the case; as I'd really like to be on the
+//       latest stable version of all our dependencies, but, as usual, software
+//       dependency management is a truly wretched Hell Zone of infinite sadness
+//          - Eliza
+
 lazy val commonSettings = Seq(
    organization    := "me.hawkweisman"
  , version         := "0.1.4" // the current release version
@@ -19,7 +29,7 @@ lazy val commonSettings = Seq(
     "https://oss.sonatype.org/content/repositories/snapshots"
  , libraryDependencies ++= Seq(
       "org.scalactic"     %% "scalactic"  % scalatestVersion
-    , "org.scalacheck"    %% "scalacheck" % "1.12.5"          % "test"
+    , "org.scalacheck"    %% "scalacheck" % scalacheckVersion % "test"
     , "org.scalatest"     %% "scalatest"  % scalatestVersion  % "test"
     , "com.storm-enroute" %% "scalameter" % "0.6"             % "bench"
     )
