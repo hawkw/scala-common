@@ -6,7 +6,7 @@ lazy val Benchmark = config("bench") extend Test
 
 lazy val scalaMeter = new TestFramework("org.scalameter.ScalaMeterFramework")
 
-lazy val scalatestVersion = "3.0.0-M15"
+lazy val scalatestVersion = "3.0.0-RC14"
 
 lazy val commonSettings = Seq(
    organization    := "me.hawkweisman"
@@ -19,7 +19,7 @@ lazy val commonSettings = Seq(
     "https://oss.sonatype.org/content/repositories/snapshots"
  , libraryDependencies ++= Seq(
       "org.scalactic"     %% "scalactic"  % scalatestVersion
-    , "org.scalacheck"    %% "scalacheck" % "1.13.2"          % "test"
+    , "org.scalacheck"    %% "scalacheck" % "1.12.5"          % "test"
     , "org.scalatest"     %% "scalatest"  % scalatestVersion  % "test"
     , "com.storm-enroute" %% "scalameter" % "0.6"             % "bench"
     )
