@@ -11,7 +11,7 @@ lazy val scalatestVersion = "3.0.0-M15"
 lazy val commonSettings = Seq(
    organization    := "me.hawkweisman"
  , version         := "0.1.4" // the current release version
- , scalaVersion    := "2.11.7"
+ , scalaVersion    := "2.11.8"
  , autoAPIMappings := true // link Scala standard lib in docs
  , sbtPlugin       := false // if we don't set this, Bintray will think
                             // we're releasing an SBT plugin
@@ -19,7 +19,7 @@ lazy val commonSettings = Seq(
     "https://oss.sonatype.org/content/repositories/snapshots"
  , libraryDependencies ++= Seq(
       "org.scalactic"     %% "scalactic"  % scalatestVersion
-    , "org.scalacheck"    %% "scalacheck" % "1.12.2"          % "test"
+    , "org.scalacheck"    %% "scalacheck" % "1.13.2"          % "test"
     , "org.scalatest"     %% "scalatest"  % scalatestVersion  % "test"
     , "com.storm-enroute" %% "scalameter" % "0.6"             % "bench"
     )
